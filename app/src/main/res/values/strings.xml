@@ -6,5 +6,17 @@
     <string name="nav_history">History</string>
     <string name="nav_settings">Settings</string>
     <string name="ai_voice_changer">Ai Voice Changer</string>
+    <string name="voice_changer">Voice Changer</string>
+    <string name="record_to_change_your_voice">Record to Change your Voice</string>
+    <string name="record">Record</string>
+    <string name="text_to_voice">Text to Voice</string>
+    <string name="change_text_into_voice">Change text into Voice</string>
+    <string name="write_text">Write Text</string>
+    <string name="speech_to_text">Speech to Text</string>
+    <string name="convert_speech_into_text">Convert speech into text</string>
+    <string name="prank_sound">Prank Sound</string>
+    <string name="play_funny_sounds">Play funny sounds</string>
+    <string name="see_all">See all</string>
+    <string name="voice_effects">Voice Effects</string>
 
 </resources>

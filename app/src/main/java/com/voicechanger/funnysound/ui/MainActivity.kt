@@ -6,14 +6,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
-import androidx.lifecycle.lifecycleScope
 import com.voicechanger.funnysound.R
 import com.voicechanger.funnysound.databinding.ActivityMainBinding
 import com.voicechanger.funnysound.utils.changeStatusBarColor
 import com.voicechanger.funnysound.utils.hideNavigationBar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -33,7 +30,7 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        changeStatusBarColor(R.color.unselected_color, this@MainActivity, true)
+        changeStatusBarColor(R.color.bg_color, this@MainActivity, false)
 
     }
 

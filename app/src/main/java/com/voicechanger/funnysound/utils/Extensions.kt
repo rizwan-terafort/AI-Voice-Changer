@@ -4,6 +4,7 @@ import android.os.Build
 import android.view.View
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.FragmentActivity
 
 fun FragmentActivity.hideNavigationBar(){
@@ -17,26 +18,17 @@ fun FragmentActivity.hideNavigationBar(){
 }
 
 
+
 fun changeStatusBarColor(@ColorRes colorRes: Int, context: FragmentActivity?, darkIcons: Boolean = false) {
     context?.let { activity ->
         val window = activity.window
         val color = ContextCompat.getColor(activity, colorRes)
-
-        // Set status bar color
+        // Set status bar background color
         window.statusBarColor = color
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val decor = window.decorView
-            var flags = decor.systemUiVisibility
-
-            flags = if (darkIcons) {
-                flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            } else {
-                flags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
-            }
-
-            decor.systemUiVisibility = flags
-        }
+        // Handle icon/text color
+        val wic = WindowInsetsControllerCompat(window, window.decorView)
+        wic.isAppearanceLightStatusBars = darkIcons
     }
 }
+
 

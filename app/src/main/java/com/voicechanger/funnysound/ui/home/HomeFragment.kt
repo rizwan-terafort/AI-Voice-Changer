@@ -1,31 +1,14 @@
 package com.voicechanger.funnysound.ui.home
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts.GetContent
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.google.mlkit.vision.segmentation.Segmentation
-import com.google.mlkit.vision.segmentation.selfie.SelfieSegmenterOptions
 import com.voicechanger.funnysound.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
-import com.google.mlkit.vision.common.InputImage
-import androidx.core.graphics.createBitmap
-import androidx.core.graphics.set
-import androidx.core.graphics.scale
 
 
 @AndroidEntryPoint
@@ -55,6 +38,14 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        mActivity?.let { activity->
+            val adapter = PrankSoundAdapter(activity)
+            binding?.rvPrankSound?.adapter = adapter
+
+            val adapter2 = PrankSoundAdapter(activity)
+            binding?.rvVoiceEffects?.adapter = adapter2
+        }
 
     }
 

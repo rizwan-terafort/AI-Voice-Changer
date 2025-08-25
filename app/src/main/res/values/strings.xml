@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name" translatable="false">Voice Changer</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_history">History</string>
+    <string name="nav_settings">Settings</string>
+    <string name="ai_voice_changer">Ai Voice Changer</string>
+
+</resources>

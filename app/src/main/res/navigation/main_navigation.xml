@@ -11,6 +11,30 @@
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" >
 
+        <!-- app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"-->
+        <action
+            android:id="@+id/action_homeFragment_to_recorder"
+            app:destination="@id/recorder_fragment"
+            />
+
     </fragment>
+
+    <fragment
+        android:id="@+id/recorder_fragment"
+        android:name="com.voicechanger.funnysound.ui.recorder.RecorderFragment"
+        tools:layout="@layout/fragment_recorder">
+        <action
+            android:id="@+id/action_recorderFragment_to_recordingsFragment"
+            app:destination="@id/recordings_fragment"
+            />
+    </fragment>
+
+    <fragment
+        android:id="@+id/recordings_fragment"
+        android:name="com.voicechanger.funnysound.ui.recorder.RecordingsFragment"
+        tools:layout="@layout/fragment_recordings"/>
 
 </navigation>

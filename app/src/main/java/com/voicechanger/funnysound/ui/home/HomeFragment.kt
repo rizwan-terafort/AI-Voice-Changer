@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.navigation.fragment.findNavController
 import com.voicechanger.funnysound.databinding.FragmentHomeBinding
+import com.voicechanger.funnysound.ui.MainFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -15,7 +17,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private var binding : FragmentHomeBinding? =null
-
 
 
     private var mActivity: FragmentActivity? = null
@@ -45,8 +46,19 @@ class HomeFragment : Fragment() {
 
             val adapter2 = PrankSoundAdapter(activity)
             binding?.rvVoiceEffects?.adapter = adapter2
+
+            binding?.recordButton?.setOnClickListener {
+               goToRecorder()
+            }
         }
 
+    }
+
+    private fun goToRecorder(){
+        mActivity?.let { activity->
+
+            findNavController().navigate(MainFragmentDirections.actionHomeFragmentToRecorder())
+        }
     }
 
     override fun onDestroyView() {

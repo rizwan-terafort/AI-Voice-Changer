@@ -1,6 +1,7 @@
 package com.voicechanger.funnysound.ui
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -20,10 +21,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        hideNavigationBar()
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
+        hideNavigationBar()
         fixBottomNavInsets()
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -35,7 +35,21 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    fun hideToolbar(){
+        binding?.actionbarLayout?.visibility = View.GONE
+    }
 
+    fun showToolbar(){
+        binding?.actionbarLayout?.visibility = View.VISIBLE
+    }
+
+    fun hideBottomNavigationView(){
+        binding?.bottomNavView?.visibility = View.GONE
+    }
+
+    fun showBottomNavigationView(){
+        binding?.bottomNavView?.visibility = View.VISIBLE
+    }
 
     private fun fixBottomNavInsets() {
         val bottomNav = binding?.bottomNavView

@@ -73,4 +73,8 @@ dependencies {
     implementation(libs.mlkit.segmentation.selfie)
     implementation(libs.sdp)
     implementation(libs.ssp)
+    implementation(libs.audiovisualizer)
+
+    implementation(libs.glide)
+    annotationProcessor(libs.glide.compiler)
 }

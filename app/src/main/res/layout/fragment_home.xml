@@ -25,17 +25,9 @@
                 android:background="@drawable/bg_card_gradient"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:paddingStart="@dimen/_10sdp"
-                android:paddingVertical="@dimen/_10sdp">
+                android:paddingTop="@dimen/_10sdp">
 
-                <!-- Mic illustration on right -->
-                <ImageView
-                    android:id="@+id/img_bg_mic"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/mics"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+
 
                 <!-- Title -->
                 <TextView
@@ -70,7 +62,7 @@
                     android:id="@+id/record_button"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="@dimen/_17sdp"
                     android:orientation="horizontal"
                     android:background="@drawable/bg_rounded_btn_white"
                     android:paddingStart="16dp"
@@ -96,6 +88,22 @@
                         />
                 </LinearLayout>
 
+                <!-- Mic illustration on right -->
+                <ImageView
+                    android:id="@+id/img_bg_mic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_mic_new"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    />
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_16sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/record_button"/>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -107,17 +115,16 @@
                 android:background="@drawable/bg_card_normal"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:paddingStart="@dimen/_10sdp"
-                android:paddingVertical="@dimen/_10sdp">
+                android:paddingTop="@dimen/_10sdp">
 
                 <!-- Mic illustration on right -->
                 <ImageView
                     android:id="@+id/img_text_to_voice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/mics"
+                    android:src="@drawable/ic_man_recording"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent" />
 
                 <!-- Title -->
                 <TextView
@@ -152,7 +159,7 @@
                     android:id="@+id/write_button"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="@dimen/_17sdp"
                     android:orientation="horizontal"
                     android:background="@drawable/bg_rounded_btn_white"
                     android:paddingStart="16dp"
@@ -178,6 +185,12 @@
 
                         />
                 </LinearLayout>
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_16sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/write_button"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -223,7 +236,7 @@
                             android:textColor="@android:color/white"
                             android:fontFamily="@font/outfit_bold"
                             android:textSize="@dimen/_14ssp"
-                            android:layout_marginTop="8dp" />
+                            android:layout_marginTop="@dimen/_12sdp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -268,7 +281,7 @@
                             android:textColor="@android:color/white"
                             android:fontFamily="@font/outfit_bold"
                             android:textSize="@dimen/_14ssp"
-                            android:layout_marginTop="8dp" />
+                            android:layout_marginTop="@dimen/_12sdp" />
 
                         <TextView
                             android:layout_width="wrap_content"

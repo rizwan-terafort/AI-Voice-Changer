@@ -23,6 +23,7 @@ mlkit="16.0.0-beta6"
 cameraCore = "1.4.2"
 sdp = "1.0.6"
 ssp = "1.1.0"
+glide = "4.16.0"
 
 
 
@@ -47,6 +48,9 @@ mlkit-segmentation-selfie = { module = "com.google.mlkit:segmentation-selfie", v
 androidx-camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "cameraCore" }
 sdp = { group = "com.intuit.sdp", name = "sdp-android", version.ref = "sdp" }
 ssp = { group = "com.intuit.ssp", name = "ssp-android", version.ref = "ssp" }
+audiovisualizer = { module = "io.github.gautamchibde:audiovisualizer", version = "2.2.5" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

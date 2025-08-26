@@ -4,10 +4,359 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg_color"
     tools:context="com.voicechanger.funnysound.ui.home.HomeFragment">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_record"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                android:background="@drawable/bg_card_gradient"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:paddingStart="@dimen/_10sdp"
+                android:paddingVertical="@dimen/_10sdp">
+
+                <!-- Mic illustration on right -->
+                <ImageView
+                    android:id="@+id/img_bg_mic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/mics"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- Title -->
+                <TextView
+                    android:id="@+id/title_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/voice_changer"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/_14ssp"
+                    android:fontFamily="@font/outfit_bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/img_bg_mic"
+                    app:layout_constraintHorizontal_bias="0.0" />
+
+                <!-- Subtitle -->
+                <TextView
+                    android:id="@+id/subtitle_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/record_to_change_your_voice"
+                    android:textColor="#B3ffffFF"
+                    android:textSize="@dimen/_12ssp"
+                    android:fontFamily="@font/outfit_regular"
+                    app:layout_constraintTop_toBottomOf="@id/title_text"
+                    app:layout_constraintStart_toStartOf="@id/title_text"
+                    app:layout_constraintEnd_toEndOf="@id/title_text"
+                    android:layout_marginTop="4dp" />
+
+                <!-- Record Button -->
+                <LinearLayout
+                    android:id="@+id/record_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/bg_rounded_btn_white"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:gravity="center_vertical"
+                    android:elevation="2dp"
+                    app:layout_constraintTop_toBottomOf="@id/subtitle_text"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_mic_home"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/record"
+                        android:fontFamily="@font/outfit_semibold"
+                        android:textSize="@dimen/_11ssp"
+                        android:textColor="#131720"
+                        />
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_text_to_voice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/cl_record"
+                android:background="@drawable/bg_card_normal"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:paddingStart="@dimen/_10sdp"
+                android:paddingVertical="@dimen/_10sdp">
+
+                <!-- Mic illustration on right -->
+                <ImageView
+                    android:id="@+id/img_text_to_voice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/mics"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- Title -->
+                <TextView
+                    android:id="@+id/tv_text_to_voice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_to_voice"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/_14ssp"
+                    android:fontFamily="@font/outfit_bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/img_text_to_voice"
+                    app:layout_constraintHorizontal_bias="0.0" />
+
+                <!-- Subtitle -->
+                <TextView
+                    android:id="@+id/tv_change_text_to_voice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/change_text_into_voice"
+                    android:textColor="#9EA2AA"
+                    android:textSize="@dimen/_12ssp"
+                    android:fontFamily="@font/outfit_regular"
+                    app:layout_constraintTop_toBottomOf="@id/tv_text_to_voice"
+                    app:layout_constraintStart_toStartOf="@id/tv_text_to_voice"
+                    app:layout_constraintEnd_toEndOf="@id/tv_text_to_voice"
+                    android:layout_marginTop="4dp" />
+
+                <!-- Record Button -->
+                <LinearLayout
+                    android:id="@+id/write_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/bg_rounded_btn_white"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:gravity="center_vertical"
+                    android:elevation="2dp"
+                    app:layout_constraintTop_toBottomOf="@id/tv_change_text_to_voice"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_write_home"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/write_text"
+                        android:textColor="#131720"
+                        android:fontFamily="@font/outfit_semibold"
+                        android:textSize="@dimen/_11ssp"
+
+                        />
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_dual"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/cl_text_to_voice"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:background="@android:color/transparent">
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/speechToTextCard"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardBackgroundColor="#131720"
+                    app:cardElevation="4dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/prankSoundCard">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:orientation="vertical"
+                        android:gravity="start"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_speech_to_text_home"
+                            />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/speech_to_text"
+                            android:textColor="@android:color/white"
+                            android:fontFamily="@font/outfit_bold"
+                            android:textSize="@dimen/_14ssp"
+                            android:layout_marginTop="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/convert_speech_into_text"
+                            android:textColor="#9EA2AA"
+                            android:fontFamily="@font/outfit_regular"
+                            android:textSize="@dimen/_10ssp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/prankSoundCard"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardBackgroundColor="#131720"
+                    app:cardElevation="4dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/speechToTextCard">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:orientation="vertical"
+                        android:gravity="start"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_prank_home"
+                            />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/prank_sound"
+                            android:textColor="@android:color/white"
+                            android:fontFamily="@font/outfit_bold"
+                            android:textSize="@dimen/_14ssp"
+                            android:layout_marginTop="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/play_funny_sounds"
+                            android:textColor="#9EA2AA"
+                            android:fontFamily="@font/outfit_regular"
+                            android:textSize="@dimen/_10ssp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/tv_prank_sound"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cl_dual"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:text="@string/prank_sound"
+                android:fontFamily="@font/outfit_semibold"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/white"/>
+
+            <TextView
+                android:id="@+id/tv_see_all1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_prank_sound"
+                app:layout_constraintBottom_toBottomOf="@id/tv_prank_sound"
+                android:text="@string/see_all"
+                android:fontFamily="@font/outfit_regular"
+                android:textSize="@dimen/_10ssp"
+                android:textColor="@color/white"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_prank_sound"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:layout_marginTop="@dimen/_8sdp"
+                tools:listitem="@layout/item_prank_sound"
+                app:layout_constraintTop_toBottomOf="@id/tv_see_all1"
+                />
+
+
+            <TextView
+                android:id="@+id/tv_voice_effect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rv_prank_sound"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:text="@string/voice_effects"
+                android:fontFamily="@font/outfit_semibold"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/white"/>
+
+            <TextView
+                android:id="@+id/tv_see_all2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_voice_effect"
+                app:layout_constraintBottom_toBottomOf="@id/tv_voice_effect"
+                android:text="@string/see_all"
+                android:fontFamily="@font/outfit_regular"
+                android:textSize="@dimen/_10ssp"
+                android:textColor="@color/white"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_voice_effects"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:layout_marginTop="@dimen/_8sdp"
+                tools:listitem="@layout/item_prank_sound"
+                app:layout_constraintTop_toBottomOf="@id/tv_voice_effect"
+                />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

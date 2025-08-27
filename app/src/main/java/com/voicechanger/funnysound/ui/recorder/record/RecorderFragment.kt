@@ -1,4 +1,4 @@
-package com.voicechanger.funnysound.ui.recorder
+package com.voicechanger.funnysound.ui.recorder.record
 
 import android.Manifest
 import android.content.ContentValues
@@ -25,16 +25,17 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.voicechanger.funnysound.R
 import com.voicechanger.funnysound.databinding.FragmentRecorderBinding
 import com.voicechanger.funnysound.utils.AppUtils
 import com.voicechanger.funnysound.utils.PcmToWavConverter
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import com.voicechanger.funnysound.R
 
 class RecorderFragment : Fragment() {
 
@@ -75,6 +76,8 @@ class RecorderFragment : Fragment() {
             AppUtils.getMain(activity).hideToolbar()
             AppUtils.getMain(activity).hideBottomNavigationView()
 
+            clickListeners()
+
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED
             ) {
@@ -90,40 +93,44 @@ class RecorderFragment : Fragment() {
                 }
             }
 
-            binding?.close?.setOnClickListener {
-                findNavController().popBackStack()
-                AppUtils.getMain(activity).showToolbar()
-                AppUtils.getMain(activity).showBottomNavigationView()
-            }
 
-            binding?.btnRecord?.setOnClickListener {
-
-                if (startRecord){
-                    startRecording()
-                    startRecord = false
-                }else if (isPaused){
-                    resumeRecording()
-                }else if (!isPaused){
-                    pauseRecording()
-                }
-                updateViews()
-            }
-
-            binding?.btnRepeat?.setOnClickListener {
-                repeatRecording()
-            }
-
-            binding?.btnDone?.setOnClickListener {
-                stopRecording()
-            }
-
-            binding?.tvImport?.setOnClickListener {
-               findNavController().navigate(RecorderFragmentDirections.actionRecorderFragmentToRecordingsFragment())
-            }
 
         }
     }
 
+    @RequiresPermission(Manifest.permission.RECORD_AUDIO)
+    private fun clickListeners(){
+        binding?.close?.setOnClickListener {
+            findNavController().popBackStack()
+            AppUtils.getMain(activity).showToolbar()
+            AppUtils.getMain(activity).showBottomNavigationView()
+        }
+
+        binding?.btnRecord?.setOnClickListener {
+
+            if (startRecord){
+                startRecording()
+                startRecord = false
+            }else if (isPaused){
+                resumeRecording()
+            }else if (!isPaused){
+                pauseRecording()
+            }
+            updateViews()
+        }
+
+        binding?.btnRepeat?.setOnClickListener {
+            repeatRecording()
+        }
+
+        binding?.btnDone?.setOnClickListener {
+            stopRecording()
+        }
+
+        binding?.tvImport?.setOnClickListener {
+            findNavController().navigate(RecorderFragmentDirections.actionRecorderFragmentToRecordingsFragment())
+        }
+    }
 
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     private fun startRecording() {
@@ -135,7 +142,13 @@ class RecorderFragment : Fragment() {
         val audioFormat = AudioFormat.ENCODING_PCM_16BIT
         val bufferSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat)
 
-        audioRecord = AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate, channelConfig, audioFormat, bufferSize)
+        audioRecord = AudioRecord(
+            MediaRecorder.AudioSource.MIC,
+            sampleRate,
+            channelConfig,
+            audioFormat,
+            bufferSize
+        )
 
         val fileName = "${System.currentTimeMillis()}.pcm"
         audioFile = File(requireContext().cacheDir, fileName) // Temporary raw PCM file
@@ -207,6 +220,8 @@ class RecorderFragment : Fragment() {
         val savedPath = saveAudioToStorage(mActivity!!, wavFile)
 
         outputFile = savedPath ?: wavFile.absolutePath
+
+        findNavController().navigate(RecorderFragmentDirections.actionRecorderFragmentToVoiceEffect(savedPath.toString()))
     }
 
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
@@ -364,7 +379,7 @@ class RecorderFragment : Fragment() {
                 val formattedTime = String.format("%02d:%02d:%02d", hours, minutes, seconds)
                 binding?.tvTime?.text = formattedTime
 
-                kotlinx.coroutines.delay(500)
+                delay(500)
             }
         }
     }

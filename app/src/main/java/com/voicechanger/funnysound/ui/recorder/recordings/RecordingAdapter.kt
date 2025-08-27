@@ -1,4 +1,4 @@
-package com.voicechanger.funnysound.ui.recorder
+package com.voicechanger.funnysound.ui.recorder.recordings
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

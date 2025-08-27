@@ -1,11 +1,14 @@
-package com.voicechanger.funnysound.ui.recorder
+package com.voicechanger.funnysound.ui.recorder.recordings
 
+import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
@@ -17,8 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.voicechanger.funnysound.data.Recording
 import com.voicechanger.funnysound.databinding.FragmentRecordingsBinding
-import android.os.Environment
-import android.media.MediaMetadataRetriever
+import com.voicechanger.funnysound.ui.recorder.recordings.RecordingsFragmentDirections
 import java.io.File
 
 class RecordingsFragment : Fragment() {
@@ -31,22 +33,22 @@ class RecordingsFragment : Fragment() {
 
     private fun checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (requireContext().checkSelfPermission(android.Manifest.permission.READ_MEDIA_AUDIO)
+            if (requireContext().checkSelfPermission(Manifest.permission.READ_MEDIA_AUDIO)
                 != PackageManager.PERMISSION_GRANTED
             ) {
                 requestPermissions(
-                    arrayOf(android.Manifest.permission.READ_MEDIA_AUDIO),
+                    arrayOf(Manifest.permission.READ_MEDIA_AUDIO),
                     REQUEST_READ_STORAGE
                 )
             } else {
                 loadRecordings()
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (requireContext().checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            if (requireContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED
             ) {
                 requestPermissions(
-                    arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                     REQUEST_READ_STORAGE
                 )
             } else {
@@ -68,7 +70,11 @@ class RecordingsFragment : Fragment() {
                 loadRecordings()
             } else {
                 // Permission denied, show message
-                Toast.makeText(requireContext(), "Storage permission required to load recordings", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Storage permission required to load recordings",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -83,21 +89,21 @@ class RecordingsFragment : Fragment() {
         return binding?.root
     }
 
-    private fun loadRecordings(){
+    private fun loadRecordings() {
         val recordings = getAllRecordings(requireContext())
         val adapter = RecordingAdapter(recordings) { recording ->
-            // play audio
-            val mediaPlayer = MediaPlayer().apply {
-                setDataSource(requireContext(), recording.uri)
-                prepare()
-                start()
-            }
+            findNavController().navigate(
+                RecordingsFragmentDirections.actionRecordingFragmentToVoiceEffect(
+                    recording.uri.toString(),isFromRecordings = true
+                )
+            )
+
         }
 
         binding?.rvRecordings?.layoutManager = LinearLayoutManager(requireContext())
         binding?.rvRecordings?.adapter = adapter
 
-        if (recordings.isEmpty()){
+        if (recordings.isEmpty()) {
             binding?.clNoRecordings?.visibility = View.VISIBLE
             binding?.rvRecordings?.visibility = View.GONE
         }
@@ -105,7 +111,7 @@ class RecordingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mActivity.let { activity->
+        mActivity.let { activity ->
 
             checkPermission()
 
@@ -156,37 +162,44 @@ class RecordingsFragment : Fragment() {
                     val size = cursor.getLong(sizeColumn)
                     val duration = cursor.getLong(durationColumn)
 
-                    val contentUri = Uri.withAppendedPath(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id.toString())
+                    val contentUri = Uri.withAppendedPath(
+                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                        id.toString()
+                    )
 
                     recordings.add(Recording(name, size, duration, contentUri))
                 }
             }
         } else {
             // Android 9 and below: list files directly under Music/Recordings
-            val musicDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
+            val musicDir =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
             val recordingsDir = File(musicDir, "Recordings")
             if (recordingsDir.exists() && recordingsDir.isDirectory) {
-                recordingsDir.listFiles()?.sortedByDescending { it.lastModified() }?.forEach { file ->
-                    if (file.isFile) {
-                        val uri = Uri.fromFile(file)
-                        val size = file.length()
-                        val name = file.name
-                        val duration = try {
-                            val retriever = MediaMetadataRetriever()
-                            retriever.setDataSource(file.absolutePath)
-                            val durStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-                            retriever.release()
-                            durStr?.toLongOrNull() ?: 0L
-                        } catch (_: Exception) { 0L }
-                        recordings.add(Recording(name, size, duration, uri))
+                recordingsDir.listFiles()?.sortedByDescending { it.lastModified() }
+                    ?.forEach { file ->
+                        if (file.isFile) {
+                            val uri = Uri.fromFile(file)
+                            val size = file.length()
+                            val name = file.name
+                            val duration = try {
+                                val retriever = MediaMetadataRetriever()
+                                retriever.setDataSource(file.absolutePath)
+                                val durStr =
+                                    retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                                retriever.release()
+                                durStr?.toLongOrNull() ?: 0L
+                            } catch (_: Exception) {
+                                0L
+                            }
+                            recordings.add(Recording(name, size, duration, uri))
+                        }
                     }
-                }
             }
         }
 
         return recordings
     }
-
 
 
     override fun onAttach(context: Context) {

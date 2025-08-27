@@ -16,7 +16,7 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"-->
         <action
-            android:id="@+id/action_homeFragment_to_recorder"
+            android:id="@+id/actionHomeFragmentToRecorder"
             app:destination="@id/recorder_fragment"
             />
 
@@ -24,17 +24,46 @@
 
     <fragment
         android:id="@+id/recorder_fragment"
-        android:name="com.voicechanger.funnysound.ui.recorder.RecorderFragment"
+        android:name="com.voicechanger.funnysound.ui.recorder.record.RecorderFragment"
         tools:layout="@layout/fragment_recorder">
         <action
-            android:id="@+id/action_recorderFragment_to_recordingsFragment"
+            android:id="@+id/actionRecorderFragmentToRecordingsFragment"
             app:destination="@id/recordings_fragment"
+            />
+
+        <action
+            android:id="@+id/actionRecorderFragmentToVoiceEffect"
+            app:destination="@id/voice_effect_fragment"
             />
     </fragment>
 
     <fragment
         android:id="@+id/recordings_fragment"
-        android:name="com.voicechanger.funnysound.ui.recorder.RecordingsFragment"
-        tools:layout="@layout/fragment_recordings"/>
+        android:name="com.voicechanger.funnysound.ui.recorder.recordings.RecordingsFragment"
+        tools:layout="@layout/fragment_recordings">
+        <action
+            android:id="@+id/actionRecordingFragmentToVoiceEffect"
+            app:destination="@id/voice_effect_fragment"
+            />
+    </fragment>
+
+    <fragment
+        android:id="@+id/voice_effect_fragment"
+        android:name="com.voicechanger.funnysound.ui.recorder.voice_effect.VoiceEffectFragment"
+        tools:layout="@layout/fragment_voice_effect">
+
+        <argument
+            android:name="audioPath"
+            app:argType="string"/>
+
+        <argument
+            android:name="isFromRecordings"
+            app:argType="boolean"
+            android:defaultValue="false"/>
+<!--        <argument-->
+<!--            android:name="recording"-->
+<!--            app:argType="com.voicechanger.funnysound.data.Recording"/>-->
+
+    </fragment>
 
 </navigation>

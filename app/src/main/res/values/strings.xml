@@ -25,5 +25,9 @@
     <string name="previous_files">Previous Files</string>
     <string name="no_recordings_yet">No recordings yet</string>
     <string name="record_audio">Record Audio</string>
+    <string name="save">Save</string>
+    <string name="dummy_title">AUD-2025_43897509</string>
+    <string name="change_voice">Change Voice</string>
+    <string name="background_effects">Background Effects</string>
 
 </resources>

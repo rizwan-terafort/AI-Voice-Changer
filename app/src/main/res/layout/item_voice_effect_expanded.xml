@@ -70,8 +70,8 @@
         android:splitTrack="false"
         android:minHeight="6dp"
         android:maxHeight="6dp"
-        android:max="30"
-        android:progress="15"/>
+        android:max="12"
+        android:progress="6"/>
 
     <TextView
         android:id="@+id/tv_30"
@@ -83,7 +83,7 @@
         android:fontFamily="@font/outfit_regular"
         android:textSize="@dimen/_10ssp"
         android:textColor="@color/unselected_color"
-        android:text="@string/_30"/>
+        android:text="@string/_12"/>
 
 
 

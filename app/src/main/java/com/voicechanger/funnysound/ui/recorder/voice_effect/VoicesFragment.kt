@@ -42,15 +42,15 @@ class VoicesFragment : Fragment(), SpeedAdjustListener {
 
     private fun setupVoiceEffects() {
         voiceEffects.addAll(listOf(
-            VoiceEffect("Default", R.drawable.ic_mic_new, "Default voice effect with no modifications", R.drawable.ic_mic_new),
-            VoiceEffect("Girl", R.drawable.ic_mic_new, "High-pitched voice effect for female voice", R.drawable.ic_mic_new),
-            VoiceEffect("Teacher", R.drawable.ic_mic_new, "Clear and authoritative voice effect", R.drawable.ic_mic_new),
-            VoiceEffect("Boy", R.drawable.ic_mic_new, "Young male voice effect", R.drawable.ic_mic_new),
-            VoiceEffect("Old Man", R.drawable.ic_mic_new, "Deep and aged voice effect", R.drawable.ic_mic_new),
-            VoiceEffect("Tiger", R.drawable.ic_mic_new, "Growling animal voice effect", R.drawable.ic_mic_new),
-            VoiceEffect("Robot", R.drawable.ic_mic_new, "Mechanical and robotic voice effect", R.drawable.ic_mic_new),
-            VoiceEffect("Alien", R.drawable.ic_mic_new, "Otherworldly alien voice effect", R.drawable.ic_mic_new),
-            VoiceEffect("Chipmunk", R.drawable.ic_mic_new, "High-speed chipmunk voice effect", R.drawable.ic_mic_new)
+            VoiceEffect(0,"Default", R.drawable.ic_mic_new,0f,0f),
+            VoiceEffect(1,"Girl", R.drawable.ic_mic_new, 1.4f, 1.0f),
+            VoiceEffect(2,"Boy", R.drawable.ic_mic_new, 1.2f, 1.0f),
+            VoiceEffect(3,"Child", R.drawable.ic_mic_new,1.6f, 1.0f),
+            VoiceEffect(4,"Old", R.drawable.ic_mic_new,0.8f, 0.9f),
+            VoiceEffect(5,"Basso", R.drawable.ic_mic_new,0.6f, 1.0f),
+            VoiceEffect(6,"Small Robot", R.drawable.ic_mic_new,1.5f, 1.2f),
+            VoiceEffect(7,"Soprano", R.drawable.ic_mic_new,1.7f, 1.0f),
+            VoiceEffect(8,"Cave", R.drawable.ic_mic_new,0.7f, 0.9f)
         ))
     }
 
@@ -92,13 +92,22 @@ class VoicesFragment : Fragment(), SpeedAdjustListener {
              mActivity = null
          }
 
-    override fun onAdjust(position: Int, isSpeed: Boolean, progress: Int) {
-        callback?.onValuesAdjusted(position, isSpeed, progress)
+    override fun onAdjust(position: Int, speedProgress : Int, pitchProgress : Int) {
+        callback?.onValuesAdjusted(position, speedProgress, pitchProgress)
+    }
+
+    override fun onItemClick(
+        position: Int,
+        item: VoiceEffect
+    ) {
+       callback?.onItemClick(position, item)
     }
 
     private var callback : VoiceFragmentCallback? = null
 
     interface VoiceFragmentCallback{
-        fun onValuesAdjusted(position: Int, isSpeed : Boolean, progress : Int)
+        fun onValuesAdjusted(position: Int, speedProgress : Int, pitchProgress : Int)
+
+        fun onItemClick(position: Int, item : VoiceEffect)
     }
 }

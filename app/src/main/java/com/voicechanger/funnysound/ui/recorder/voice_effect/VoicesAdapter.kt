@@ -57,6 +57,7 @@ class VoicesAdapter(
                     root.setOnClickListener {
                         expandItem(item.originalIndex)
                         onParentClick(v)
+                        listener.onItemClick(position, item.voiceEffect)
                     }
                 }
             }
@@ -65,11 +66,29 @@ class VoicesAdapter(
                 val originalIdx = item.originalIndex
 
                 (holder as ExpandedViewHolder).binding.apply {
-                    root.setOnClickListener { collapseItem() }
+
+
+                    seekBarVoiceEffect.progress = item.voiceEffect.pitch.toInt()
+                    seekBarSpeed.progress = item.voiceEffect.speed.toInt()
+
+                    root.setOnClickListener {
+                       // collapseItem()
+                    }
 
                     seekBarVoiceEffect.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
                         override fun onProgressChanged(seekBar: android.widget.SeekBar?, progress: Int, fromUser: Boolean) {
-                            listener.onAdjust(originalIdx, false, progress)
+                            val speed = seekBarSpeed.progress
+                            listener.onAdjust(originalIdx, speed,progress)
+                        }
+                        override fun onStartTrackingTouch(seekBar: android.widget.SeekBar?) {}
+                        override fun onStopTrackingTouch(seekBar: android.widget.SeekBar?) {}
+                    })
+
+                    seekBarSpeed.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
+                        override fun onProgressChanged(seekBar: android.widget.SeekBar?, progress: Int, fromUser: Boolean) {
+                            val pitch = seekBarVoiceEffect.progress / 100
+                            val speed = seekBarSpeed.progress / 100
+                            listener.onAdjust(originalIdx, speed,pitch)
                         }
                         override fun onStartTrackingTouch(seekBar: android.widget.SeekBar?) {}
                         override fun onStopTrackingTouch(seekBar: android.widget.SeekBar?) {}
@@ -136,5 +155,7 @@ class VoicesAdapter(
 }
 
 interface SpeedAdjustListener {
-    fun onAdjust(position: Int, isSpeed : Boolean, progress : Int)
+    fun onAdjust(position: Int, speedProgress : Int, pitchProgress : Int)
+
+    fun onItemClick(position : Int, item : VoiceEffect)
 }

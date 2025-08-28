@@ -77,4 +77,7 @@ dependencies {
 
     implementation(libs.glide)
     annotationProcessor(libs.glide.compiler)
+
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.ui) // optional, agar UI chahiye
 }

@@ -4,26 +4,38 @@ import android.content.Context
 import android.database.Cursor
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
+import android.media.SoundPool
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.OptIn
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.PlaybackParameters
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.voicechanger.funnysound.data.Recording
 import com.voicechanger.funnysound.databinding.FragmentVoiceEffectBinding
 import java.io.File
 import com.voicechanger.funnysound.R
+import com.voicechanger.funnysound.data.VoiceEffect
+import java.util.logging.Handler
 
 class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback {
     private var binding: FragmentVoiceEffectBinding? = null
@@ -32,12 +44,13 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback {
     private var audioPath: String? = null
     private var recording: Recording? = null
 
-    private var mediaPlayer: MediaPlayer? = null
-    private var updateSeekBarRunnable: Runnable? = null
-    private val handler = android.os.Handler()
-    private var isUserSeeking = false
-
     private var isFromRecordings = false
+
+
+    private var exoPlayer: ExoPlayer? = null
+    private var updateSeekBarRunnable: Runnable? = null
+    private val handler = android.os.Handler(Looper.getMainLooper())
+    private var isUserSeeking = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +74,7 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mActivity?.let { activity ->
+            exoPlayer = ExoPlayer.Builder(activity).build()
             getAllRecordings(activity).let { theList ->
                 for (record in theList) {
                     if (isFromRecordings) {
@@ -92,30 +106,93 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback {
     }
 
 
+    private fun changePitchOfSound(speed: Float,pitch: Float) {
+        mActivity?.let { activity ->
+            // Get the current URI of the audio
+            val uri = if (isFromRecordings) {
+                getFilePathFromContentUri(audioPath?.toUri()!!, activity)
+            } else {
+                audioPath
+            }
+
+
+            if (uri != null) {
+                // Set the media item and prepare only if it's the first time
+                if (exoPlayer?.isPlaying != true) {
+                    val mediaItem = MediaItem.fromUri(uri)
+                    exoPlayer?.setMediaItem(mediaItem)
+                    exoPlayer?.prepare()
+                }
+
+                // Set new playback parameters (change pitch and speed)
+                //   val playbackParameters = PlaybackParameters(1.2f, 1.5f)  // Speed = 1.2x, Pitch = 1.5x
+                val playbackParameters =
+                    PlaybackParameters(speed, pitch)  // Speed = 1.2x, Pitch = 1.5x
+                exoPlayer?.playbackParameters = playbackParameters
+
+                // Continue playing from the current position without resetting
+                exoPlayer?.play()
+            }
+        }
+    }
+
+
+
+
     private fun playRecording(uri: Uri) {
         try {
-            mediaPlayer?.release()
-            mediaPlayer = MediaPlayer().apply {
-                setDataSource(requireContext(), uri)
+            // Release the current player if it exists
+            exoPlayer?.release()
+            exoPlayer = ExoPlayer.Builder(requireContext()).build().apply {
+                val mediaItem = MediaItem.fromUri(uri)
+                setMediaItem(mediaItem)
                 prepare()
-                start()
 
-                // Seekbar setup
-                binding?.seekBar?.max = duration
-                binding?.tvTotal?.text = formatTime(duration)
+                // Listen for when the player is ready
+                addListener(object : Player.Listener {
+                    @OptIn(UnstableApi::class)
+                    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                        super.onPlayerStateChanged(playWhenReady, playbackState)
+                        if (playbackState == Player.STATE_READY) {
+                            // Once the player is ready, set the seekbar max value and start syncing it
+                            binding?.seekBar?.max = duration.toInt() // ExoPlayer duration in ms
+                            binding?.tvTotal?.text = formatTime(duration.toInt())
 
-                // SeekBar update runnable
-                updateSeekBarRunnable = object : Runnable {
-                    override fun run() {
-                        if (mediaPlayer != null && !isUserSeeking) {
-                            val currentPos = mediaPlayer!!.currentPosition
-                            binding?.seekBar?.progress = currentPos
-                            binding?.tvCurrent?.text = formatTime(currentPos)
+                            // Start seekbar updates after player is ready
+                            startSeekBarUpdate()
                         }
-                        handler.postDelayed(this, 500) // update every 0.5 sec
+                    }
+
+                    override fun onPlaybackStateChanged(state: Int) {
+                        super.onPlaybackStateChanged(state)
+                        if (state == Player.STATE_ENDED) {
+                            binding?.seekBar?.progress = 0
+                            binding?.tvCurrent?.text = "00:00"
+                            binding?.btnPlayPause?.setImageResource(R.drawable.ic_play_32)
+                        }
+                    }
+
+                    override fun onPlayerError(error: PlaybackException) {
+                        super.onPlayerError(error)
+                        Toast.makeText(requireContext(), "Error playing audio", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                })
+
+                playWhenReady = true // Start playback immediately when ready
+            }
+
+            // Play/Pause button
+            binding?.btnPlayPause?.setOnClickListener {
+                exoPlayer?.let { player ->
+                    if (player.isPlaying) {
+                        player.pause()
+                        binding?.btnPlayPause?.setImageResource(R.drawable.ic_play_32)
+                    } else {
+                        player.play()
+                        binding?.btnPlayPause?.setImageResource(R.drawable.ic_pause_32)
                     }
                 }
-                handler.post(updateSeekBarRunnable!!)
             }
 
             // Seekbar change listener
@@ -126,7 +203,7 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback {
                     progress: Int,
                     fromUser: Boolean
                 ) {
-                    if (fromUser && mediaPlayer != null) {
+                    if (fromUser && exoPlayer != null) {
                         binding?.tvCurrent?.text = formatTime(progress)
                     }
                 }
@@ -137,29 +214,9 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback {
 
                 override fun onStopTrackingTouch(seekBar: android.widget.SeekBar?) {
                     isUserSeeking = false
-                    mediaPlayer?.seekTo(seekBar?.progress ?: 0)
+                    exoPlayer?.seekTo(seekBar?.progress?.toLong() ?: 0L)
                 }
             })
-
-            // Play/Pause button
-            binding?.btnPlayPause?.setOnClickListener {
-                mediaPlayer?.let { mp ->
-                    if (mp.isPlaying) {
-                        mp.pause()
-                        binding?.btnPlayPause?.setImageResource(R.drawable.ic_play_32)
-                    } else {
-                        mp.start()
-                        binding?.btnPlayPause?.setImageResource(R.drawable.ic_pause_32)
-                    }
-                }
-            }
-
-            // Reset UI when audio completes
-            mediaPlayer?.setOnCompletionListener {
-                binding?.seekBar?.progress = 0
-                binding?.tvCurrent?.text = "00:00"
-                binding?.btnPlayPause?.setImageResource(R.drawable.ic_play_32)
-            }
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -167,14 +224,44 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback {
         }
     }
 
+    // Function to start updating the SeekBar
+    private fun startSeekBarUpdate() {
+        updateSeekBarRunnable = object : Runnable {
+            override fun run() {
+                exoPlayer?.let { player ->
+                    if (!isUserSeeking) {
+                        val currentPos = player.currentPosition
+                        binding?.seekBar?.progress = currentPos.toInt()
+                        binding?.tvCurrent?.text = formatTime(currentPos.toInt())
+                    }
+                }
+                handler.postDelayed(this, 500) // update every 0.5 sec
+            }
+        }
+        handler.post(updateSeekBarRunnable!!)
+    }
+
+
+    private fun updateSeekBar() {
+        exoPlayer?.let { player ->
+            val currentPosition = player.currentPosition
+            binding?.seekBar?.progress = currentPosition.toInt()
+            binding?.tvCurrent?.text = formatTime(currentPosition.toInt())
+        }
+    }
 
     override fun onValuesAdjusted(
-        position: Int,
-        isSpeed: Boolean,
-        progress: Int
+        position: Int, speedProgress : Int, pitchProgress : Int
     ) {
+        changePitchOfSound(speedProgress.toFloat(), pitchProgress.toFloat())
+    }
 
-
+    override fun onItemClick(
+        position: Int,
+        item: VoiceEffect
+    ) {
+        //here change the pitch
+        changePitchOfSound(item.speed, item.pitch)
     }
 
 
@@ -302,8 +389,8 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback {
     override fun onDestroyView() {
         super.onDestroyView()
         handler.removeCallbacks(updateSeekBarRunnable ?: return)
-        mediaPlayer?.release()
-        mediaPlayer = null
+        exoPlayer?.release()
+        exoPlayer = null
     }
 
 

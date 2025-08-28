@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,15 +24,13 @@ import com.voicechanger.funnysound.data.Recording
 import com.voicechanger.funnysound.databinding.FragmentVoiceEffectBinding
 import java.io.File
 import com.voicechanger.funnysound.R
-import com.voicechanger.funnysound.ui.MainPagerAdapter
-import com.voicechanger.funnysound.ui.home.HomeFragment
 
-class VoiceEffectFragment : Fragment() {
-    private var binding : FragmentVoiceEffectBinding? = null
+class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback {
+    private var binding: FragmentVoiceEffectBinding? = null
     private var mActivity: FragmentActivity? = null
 
-    private var audioPath : String? = null
-    private var recording : Recording? = null
+    private var audioPath: String? = null
+    private var recording: Recording? = null
 
     private var mediaPlayer: MediaPlayer? = null
     private var updateSeekBarRunnable: Runnable? = null
@@ -55,30 +54,30 @@ class VoiceEffectFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentVoiceEffectBinding.inflate(inflater,container,false)
+        binding = FragmentVoiceEffectBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mActivity?.let { activity->
-           getAllRecordings(activity).let { theList->
-               for (record in theList){
-                   if (isFromRecordings){
-                       if (record.uri.toString()== audioPath){
-                           recording = record
-                           break
-                       }
-                   }else{
-                       if (getFilePathFromContentUri(record.uri , activity)== audioPath){
-                           recording = record
-                           break
-                       }
-                   }
+        mActivity?.let { activity ->
+            getAllRecordings(activity).let { theList ->
+                for (record in theList) {
+                    if (isFromRecordings) {
+                        if (record.uri.toString() == audioPath) {
+                            recording = record
+                            break
+                        }
+                    } else {
+                        if (getFilePathFromContentUri(record.uri, activity) == audioPath) {
+                            recording = record
+                            break
+                        }
+                    }
 
-               }
-               playRecording(recording?.uri!!)
-           }
+                }
+                playRecording(recording?.uri!!)
+            }
 
             clickListeners()
 
@@ -120,8 +119,13 @@ class VoiceEffectFragment : Fragment() {
             }
 
             // Seekbar change listener
-            binding?.seekBar?.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: android.widget.SeekBar?, progress: Int, fromUser: Boolean) {
+            binding?.seekBar?.setOnSeekBarChangeListener(object :
+                android.widget.SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(
+                    seekBar: android.widget.SeekBar?,
+                    progress: Int,
+                    fromUser: Boolean
+                ) {
                     if (fromUser && mediaPlayer != null) {
                         binding?.tvCurrent?.text = formatTime(progress)
                     }
@@ -163,7 +167,18 @@ class VoiceEffectFragment : Fragment() {
         }
     }
 
-    private fun clickListeners(){
+
+    override fun onValuesAdjusted(
+        position: Int,
+        isSpeed: Boolean,
+        progress: Int
+    ) {
+
+
+    }
+
+
+    private fun clickListeners() {
         binding.apply {
             this?.back?.setOnClickListener {
                 findNavController().popBackStack()
@@ -216,31 +231,39 @@ class VoiceEffectFragment : Fragment() {
                     val size = cursor.getLong(sizeColumn)
                     val duration = cursor.getLong(durationColumn)
 
-                    val contentUri = Uri.withAppendedPath(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id.toString())
+                    val contentUri = Uri.withAppendedPath(
+                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                        id.toString()
+                    )
 
                     recordings.add(Recording(name, size, duration, contentUri))
                 }
             }
         } else {
             // Android 9 and below: list files directly under Music/Recordings
-            val musicDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
+            val musicDir =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
             val recordingsDir = File(musicDir, "Recordings")
             if (recordingsDir.exists() && recordingsDir.isDirectory) {
-                recordingsDir.listFiles()?.sortedByDescending { it.lastModified() }?.forEach { file ->
-                    if (file.isFile) {
-                        val uri = Uri.fromFile(file)
-                        val size = file.length()
-                        val name = file.name
-                        val duration = try {
-                            val retriever = MediaMetadataRetriever()
-                            retriever.setDataSource(file.absolutePath)
-                            val durStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-                            retriever.release()
-                            durStr?.toLongOrNull() ?: 0L
-                        } catch (_: Exception) { 0L }
-                        recordings.add(Recording(name, size, duration, uri))
+                recordingsDir.listFiles()?.sortedByDescending { it.lastModified() }
+                    ?.forEach { file ->
+                        if (file.isFile) {
+                            val uri = Uri.fromFile(file)
+                            val size = file.length()
+                            val name = file.name
+                            val duration = try {
+                                val retriever = MediaMetadataRetriever()
+                                retriever.setDataSource(file.absolutePath)
+                                val durStr =
+                                    retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                                retriever.release()
+                                durStr?.toLongOrNull() ?: 0L
+                            } catch (_: Exception) {
+                                0L
+                            }
+                            recordings.add(Recording(name, size, duration, uri))
+                        }
                     }
-                }
             }
         }
 
@@ -260,7 +283,7 @@ class VoiceEffectFragment : Fragment() {
                 cursor.close()
             }
             return filePath
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
             return ""
         }
@@ -303,6 +326,7 @@ class VoiceEffectFragment : Fragment() {
                 else -> VoicesFragment()
             }
         }
+
         fun addFragment(fragment: Fragment) {
             fragmentList.add(fragment)
         }

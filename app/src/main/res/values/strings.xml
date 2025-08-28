@@ -29,5 +29,10 @@
     <string name="dummy_title">AUD-2025_43897509</string>
     <string name="change_voice">Change Voice</string>
     <string name="background_effects">Background Effects</string>
+    <string name="adjustment">Adjustment</string>
+    <string name="_0">0</string>
+    <string name="_30">30</string>
+    <string name="voice_effect">Voice Effect</string>
+    <string name="speed">Speed</string>
 
 </resources>

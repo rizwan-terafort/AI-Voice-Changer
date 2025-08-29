@@ -30,14 +30,17 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.google.android.material.tabs.TabLayout
 import com.voicechanger.funnysound.data.Recording
 import com.voicechanger.funnysound.databinding.FragmentVoiceEffectBinding
 import java.io.File
 import com.voicechanger.funnysound.R
 import com.voicechanger.funnysound.data.VoiceEffect
+import com.voicechanger.funnysound.ui.recorder.voice_effect.bg_music.BgMusicFragment
+import com.voicechanger.funnysound.utils.toFloatValue
 import java.util.logging.Handler
 
-class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback {
+class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, BgMusicFragment.BgMusicVolumeCallback {
     private var binding: FragmentVoiceEffectBinding? = null
     private var mActivity: FragmentActivity? = null
 
@@ -97,7 +100,7 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback {
 
             val adapter = VoicePagerAdapter(childFragmentManager, lifecycle)
             adapter.addFragment(VoicesFragment())
-            adapter.addFragment(VoicesFragment())
+            adapter.addFragment(BgMusicFragment())
             binding?.viewPager?.adapter = adapter
             binding?.viewPager?.isUserInputEnabled = false
 
@@ -108,30 +111,30 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback {
 
     private fun changePitchOfSound(speed: Float,pitch: Float) {
         mActivity?.let { activity ->
-            // Get the current URI of the audio
-            val uri = if (isFromRecordings) {
-                getFilePathFromContentUri(audioPath?.toUri()!!, activity)
-            } else {
-                audioPath
-            }
-
-
-            if (uri != null) {
-                // Set the media item and prepare only if it's the first time
-                if (exoPlayer?.isPlaying != true) {
-                    val mediaItem = MediaItem.fromUri(uri)
-                    exoPlayer?.setMediaItem(mediaItem)
-                    exoPlayer?.prepare()
+            try {
+                // Get the current URI of the audio
+                val uri = if (isFromRecordings) {
+                    getFilePathFromContentUri(audioPath?.toUri()!!, activity)
+                } else {
+                    audioPath
                 }
-
-                // Set new playback parameters (change pitch and speed)
-                //   val playbackParameters = PlaybackParameters(1.2f, 1.5f)  // Speed = 1.2x, Pitch = 1.5x
-                val playbackParameters =
-                    PlaybackParameters(speed, pitch)  // Speed = 1.2x, Pitch = 1.5x
-                exoPlayer?.playbackParameters = playbackParameters
-
-                // Continue playing from the current position without resetting
-                exoPlayer?.play()
+                if (uri != null) {
+                    // Set the media item and prepare only if it's the first time
+                    if (exoPlayer?.isPlaying != true) {
+                        val mediaItem = MediaItem.fromUri(uri)
+                        exoPlayer?.setMediaItem(mediaItem)
+                        exoPlayer?.prepare()
+                    }
+                    // Set new playback parameters (change pitch and speed)
+                    //   val playbackParameters = PlaybackParameters(1.2f, 1.5f)  // Speed = 1.2x, Pitch = 1.5x
+                    val playbackParameters =
+                        PlaybackParameters(speed, pitch)  // Speed = 1.2x, Pitch = 1.5x
+                    exoPlayer?.playbackParameters = playbackParameters
+                    // Continue playing from the current position without resetting
+                    exoPlayer?.play()
+                }
+            }catch (e : Exception){
+                e.printStackTrace()
             }
         }
     }
@@ -147,6 +150,7 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback {
                 val mediaItem = MediaItem.fromUri(uri)
                 setMediaItem(mediaItem)
                 prepare()
+                repeatMode = Player.REPEAT_MODE_ONE
 
                 // Listen for when the player is ready
                 addListener(object : Player.Listener {
@@ -253,7 +257,9 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback {
     override fun onValuesAdjusted(
         position: Int, speedProgress : Int, pitchProgress : Int
     ) {
-        changePitchOfSound(speedProgress.toFloat(), pitchProgress.toFloat())
+        val actualSpeed = speedProgress.toFloatValue()
+        val actualPitch = pitchProgress.toFloatValue()
+        changePitchOfSound(actualSpeed, actualPitch)
     }
 
     override fun onItemClick(
@@ -270,6 +276,29 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback {
             this?.back?.setOnClickListener {
                 findNavController().popBackStack()
             }
+
+            this?.tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    when (tab.position) {
+                        0 -> {
+                            // First tab clicked (Change Voice)
+                          binding?.viewPager?.currentItem = 0
+                        }
+                        1 -> {
+                            // Second tab clicked (Background Effects)
+                            binding?.viewPager?.currentItem = 1
+                        }
+                    }
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab) {
+                    // optional
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab) {
+                    // fires again if user clicks the same tab twice
+                }
+            })
         }
     }
 
@@ -393,6 +422,14 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback {
         exoPlayer = null
     }
 
+    override fun onVolumeChanged(
+        value: Int,
+        item: VoiceEffect
+    ) {
+       //change bg music.
+
+    }
+
 
     inner class VoicePagerAdapter(
         fragmentManager: FragmentManager, lifecycle: Lifecycle
@@ -408,7 +445,7 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback {
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 0 -> VoicesFragment()
-                1 -> VoicesFragment()
+                1 -> BgMusicFragment()
 
                 else -> VoicesFragment()
             }

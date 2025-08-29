@@ -1,21 +1,24 @@
-package com.voicechanger.funnysound.ui.recorder.voice_effect
+package com.voicechanger.funnysound.ui.recorder.voice_effect.bg_music
 
 import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
 import androidx.recyclerview.widget.RecyclerView
 import com.voicechanger.funnysound.data.VoiceEffect
 import com.voicechanger.funnysound.databinding.ItemVoicesBinding
 import com.voicechanger.funnysound.databinding.ItemVoiceEffectExpandedBinding
+import com.voicechanger.funnysound.ui.recorder.voice_effect.SpeedAdjustListener
 import com.voicechanger.funnysound.utils.toIntValue
 
 ////
-class VoicesAdapter(
+class BgMusicAdapter(
     private val voiceEffects: List<VoiceEffect>,
     private val spanCount: Int,
     private val onParentClick: (VoiceEffect) -> Unit,
-    private val listener: SpeedAdjustListener
+    private val listener: BgMusicVolumeChangeListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -59,7 +62,7 @@ class VoicesAdapter(
                     root.setOnClickListener {
                         if (position !=0) expandItem(item.originalIndex)
                         onParentClick(v)
-                        listener.onItemClick(position, item.voiceEffect)
+                        listener.onVolumeChanged(-1, item.voiceEffect)
                     }
                 }
             }
@@ -69,33 +72,28 @@ class VoicesAdapter(
 
                 (holder as ExpandedViewHolder).binding.apply {
 
-                    val speedProgress = item.voiceEffect.speed.toIntValue()
-                    val pitchProgress = item.voiceEffect.pitch.toIntValue()
+                    tvSpeed.visibility = View.GONE
+                    tv00.visibility = View.GONE
+                    seekBarSpeed.visibility = View.GONE
+                    tv300.visibility = View.GONE
 
-                    seekBarVoiceEffect.progress = pitchProgress
-                    seekBarSpeed.progress = speedProgress
+                    tvVoiceEffect.text = "Volume"
+                    tv30.text = "100"
+                    seekBarVoiceEffect.max = 100
+                    seekBarVoiceEffect.progress = 50
 
                     root.setOnClickListener {
                        // collapseItem()
                     }
 
-                    seekBarVoiceEffect.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
-                        override fun onProgressChanged(seekBar: android.widget.SeekBar?, progress: Int, fromUser: Boolean) {
-                            val speed = seekBarSpeed.progress
-                            listener.onAdjust(originalIdx, speed,progress)
+                    seekBarVoiceEffect.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                        override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                            listener.onVolumeChanged(progress, item.voiceEffect)
                         }
-                        override fun onStartTrackingTouch(seekBar: android.widget.SeekBar?) {}
-                        override fun onStopTrackingTouch(seekBar: android.widget.SeekBar?) {}
+                        override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+                        override fun onStopTrackingTouch(seekBar: SeekBar?) {}
                     })
 
-                    seekBarSpeed.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
-                        override fun onProgressChanged(seekBar: android.widget.SeekBar?, progress: Int, fromUser: Boolean) {
-                            val pitch = seekBarVoiceEffect.progress
-                            listener.onAdjust(originalIdx, progress,pitch)
-                        }
-                        override fun onStartTrackingTouch(seekBar: android.widget.SeekBar?) {}
-                        override fun onStopTrackingTouch(seekBar: android.widget.SeekBar?) {}
-                    })
                 }
             }
         }
@@ -122,9 +120,7 @@ class VoicesAdapter(
         }
     }
 
-    /**
-     * Core: insert the Expanded row AFTER the row that contains `expandedPosition`.
-     */
+
     private fun rebuildDisplayItems() {
         displayItems.clear()
         // 1) push all normals
@@ -155,10 +151,9 @@ class VoicesAdapter(
         }
         super.onViewRecycled(holder)
     }
+
 }
 
-interface SpeedAdjustListener {
-    fun onAdjust(position: Int, speedProgress : Int, pitchProgress : Int)
-
-    fun onItemClick(position : Int, item : VoiceEffect)
+interface BgMusicVolumeChangeListener{
+    fun onVolumeChanged(value : Int, item : VoiceEffect)
 }

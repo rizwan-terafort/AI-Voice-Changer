@@ -42,15 +42,15 @@ class VoicesFragment : Fragment(), SpeedAdjustListener {
 
     private fun setupVoiceEffects() {
         voiceEffects.addAll(listOf(
-            VoiceEffect(0,"Default", R.drawable.ic_mic_new,0f,0f),
-            VoiceEffect(1,"Girl", R.drawable.ic_mic_new, 1.4f, 1.0f),
-            VoiceEffect(2,"Boy", R.drawable.ic_mic_new, 1.2f, 1.0f),
-            VoiceEffect(3,"Child", R.drawable.ic_mic_new,1.6f, 1.0f),
-            VoiceEffect(4,"Old", R.drawable.ic_mic_new,0.8f, 0.9f),
-            VoiceEffect(5,"Basso", R.drawable.ic_mic_new,0.6f, 1.0f),
-            VoiceEffect(6,"Small Robot", R.drawable.ic_mic_new,1.5f, 1.2f),
-            VoiceEffect(7,"Soprano", R.drawable.ic_mic_new,1.7f, 1.0f),
-            VoiceEffect(8,"Cave", R.drawable.ic_mic_new,0.7f, 0.9f)
+            VoiceEffect(0,"Default", R.drawable.ic_mic_new,1.0f,1.0f),
+            VoiceEffect(1,"Girl", R.drawable.ic_mic_new, 1.20f, 1.00f),
+            VoiceEffect(2,"Boy", R.drawable.ic_mic_new, 1.10f, 1.00f),
+            VoiceEffect(3,"Child", R.drawable.ic_mic_new,1.50f, 1.08f),
+            VoiceEffect(4,"Old", R.drawable.ic_mic_new,0.80f, 0.95f),
+            VoiceEffect(5,"Basso", R.drawable.ic_mic_new,0.65f, 0.95f),
+            VoiceEffect(6,"Small Robot", R.drawable.ic_mic_new,1.40f, 1.15f),
+            VoiceEffect(7,"Soprano", R.drawable.ic_mic_new,1.70f, 1.05f),
+            VoiceEffect(8,"Cave", R.drawable.ic_mic_new,0.90f, 0.95f)
         ))
     }
 

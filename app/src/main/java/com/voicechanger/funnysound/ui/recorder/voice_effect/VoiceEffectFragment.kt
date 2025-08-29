@@ -1,9 +1,13 @@
 package com.voicechanger.funnysound.ui.recorder.voice_effect
 
+import ai.instavision.ffmpegkit.FFmpegKit
+import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
+import android.media.MediaScannerConnection
 import android.media.SoundPool
 import android.net.Uri
 import android.os.Build
@@ -38,6 +42,8 @@ import com.voicechanger.funnysound.R
 import com.voicechanger.funnysound.data.VoiceEffect
 import com.voicechanger.funnysound.ui.recorder.voice_effect.bg_music.BgMusicFragment
 import com.voicechanger.funnysound.utils.toFloatValue
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.util.logging.Handler
 
 class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, BgMusicFragment.BgMusicVolumeCallback {
@@ -48,6 +54,10 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
     private var recording: Recording? = null
 
     private var isFromRecordings = false
+
+
+
+    private var bgPlayer: ExoPlayer? = null
 
 
     private var exoPlayer: ExoPlayer? = null
@@ -104,10 +114,119 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
             binding?.viewPager?.adapter = adapter
             binding?.viewPager?.isUserInputEnabled = false
 
+            binding?.ivIcon?.setOnClickListener {
+                val voicePath = getFilePathFromContentUri(audioPath?.toUri()!!,requireContext())
+                mixAndSave(requireContext(), voicePath.toString(), "bgmusics/bgmusic.mp3")
+            }
 
         }
     }
 
+    fun copyAssetToFile(context: Context, assetPath: String, outFile: File): String {
+        context.assets.open(assetPath).use { input ->
+            FileOutputStream(outFile).use { output ->
+                input.copyTo(output)
+            }
+        }
+        return outFile.absolutePath
+    }
+
+    fun mixAndSave(
+        context: Context,
+        voicePath: String,
+        assetBgPath: String // e.g. "bgmusics/rain.wav"
+    ) {
+        // 1️⃣ Copy BG music from assets to cache
+        val bgMusicFile = File(context.cacheDir, "bg_temp.wav")
+        copyAssetToFile(context, assetBgPath, bgMusicFile)
+
+        // 2️⃣ Temp output file (before saving to MediaStore)
+        val tempOutput = File(context.cacheDir, "mixed_temp.wav")
+
+        // 3️⃣ FFmpeg command to mix
+        val command = arrayOf(
+            "-i", voicePath,
+            "-i", bgMusicFile.absolutePath,
+            "-filter_complex", "[0:a][1:a]amix=inputs=2:duration=longest:dropout_transition=0",
+            "-c:a", "pcm_s16le", // WAV format
+            tempOutput.absolutePath
+        )
+
+        FFmpegKit.executeAsync(command.joinToString(" ")) { session ->
+            val returnCode = session.returnCode
+            if (returnCode.isValueSuccess) {
+                // 4️⃣ Save using your function
+                val finalPath = saveAudioToStorage(context, tempOutput)
+                (context as? Activity)?.runOnUiThread {
+                    Toast.makeText(context, "Saved at: $finalPath", Toast.LENGTH_LONG).show()
+                }
+            } else {
+                (context as? Activity)?.runOnUiThread {
+                    Toast.makeText(context, "Mixing failed!", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    fun saveAudioToStorage(context: Context, sourceFile: File): String? {
+        val filename = "${System.currentTimeMillis()}.wav"
+        var audioUri: Uri? = null
+        var audioPath: String? = null
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // ✅ Recordings folder path
+                val folderPath = Environment.DIRECTORY_MUSIC + File.separator + "Recordings"
+
+                context.contentResolver?.also { resolver ->
+                    val contentValues = ContentValues().apply {
+                        put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+                        put(MediaStore.MediaColumns.MIME_TYPE, "audio/wav")
+                        put(MediaStore.MediaColumns.RELATIVE_PATH, folderPath)
+                        put(MediaStore.Audio.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
+                    }
+
+                    // ✅ Insert into Audio collection
+                    audioUri = resolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+                    audioUri?.let { uri ->
+                        resolver.openOutputStream(uri)?.use { outputStream ->
+                            FileInputStream(sourceFile).use { inputStream ->
+                                inputStream.copyTo(outputStream)
+                            }
+                        }
+
+                        // Approx path (not guaranteed on Q+)
+                        audioPath = Environment
+                            .getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
+                            .absolutePath + "/Recordings/" + filename
+                    }
+                }
+            } else {
+                // ✅ For Android 9 and below
+                val musicDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
+                val recordingsDir = File(musicDir, "Recordings")
+                if (!recordingsDir.exists()) recordingsDir.mkdirs()
+
+                val audioFile = File(recordingsDir, filename)
+                FileInputStream(sourceFile).use { input ->
+                    FileOutputStream(audioFile).use { output ->
+                        input.copyTo(output)
+                    }
+                }
+
+                audioUri = Uri.fromFile(audioFile)
+                audioPath = audioFile.absolutePath
+
+                // notify gallery/media apps
+                MediaScannerConnection.scanFile(context, arrayOf(audioFile.absolutePath), null, null)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return audioPath
+    }
 
     private fun changePitchOfSound(speed: Float,pitch: Float) {
         mActivity?.let { activity ->
@@ -140,7 +259,25 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
     }
 
 
+    private fun startBgMusic() {
+        if (bgPlayer == null) {
+            bgPlayer = ExoPlayer.Builder(requireContext()).build()
 
+            // Copy bg music from assets → cache (ExoPlayer can’t play assets directly)
+            val bgPath = copyAssetToCache(requireContext(), "bgmusics/bgmusic.mp3")
+            val bgItem = MediaItem.fromUri(Uri.fromFile(File(bgPath)))
+
+            bgPlayer?.setMediaItem(bgItem)
+            bgPlayer?.volume = 0.3f // keep background soft
+            bgPlayer?.repeatMode = Player.REPEAT_MODE_ONE
+            bgPlayer?.prepare()
+        }
+        bgPlayer?.playWhenReady = true
+    }
+
+    private fun stopBgMusic() {
+        bgPlayer?.pause()
+    }
 
     private fun playRecording(uri: Uri) {
         try {
@@ -420,6 +557,8 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
         handler.removeCallbacks(updateSeekBarRunnable ?: return)
         exoPlayer?.release()
         exoPlayer = null
+        bgPlayer?.release()
+        bgPlayer = null
     }
 
     override fun onVolumeChanged(
@@ -428,6 +567,7 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
     ) {
        //change bg music.
 
+        startBgMusic()
     }
 
 
@@ -455,5 +595,18 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
             fragmentList.add(fragment)
         }
 
+    }
+
+
+    fun copyAssetToCache(context: Context, assetFileName: String): String {
+        val cacheFile = File(context.cacheDir, assetFileName.substringAfterLast("/"))
+        if (!cacheFile.exists()) {
+            context.assets.open(assetFileName).use { input ->
+                FileOutputStream(cacheFile).use { output ->
+                    input.copyTo(output)
+                }
+            }
+        }
+        return cacheFile.absolutePath
     }
 }

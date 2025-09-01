@@ -2,25 +2,24 @@ package com.voicechanger.funnysound.ui.recorder.voice_effect
 
 import ai.instavision.ffmpegkit.FFmpegKit
 import android.app.Activity
+import android.app.Dialog
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.media.MediaMetadataRetriever
-import android.media.MediaPlayer
 import android.media.MediaScannerConnection
-import android.media.SoundPool
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Looper
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.OptIn
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -35,16 +34,15 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
-import com.voicechanger.funnysound.data.Recording
-import com.voicechanger.funnysound.databinding.FragmentVoiceEffectBinding
-import java.io.File
 import com.voicechanger.funnysound.R
+import com.voicechanger.funnysound.data.Recording
 import com.voicechanger.funnysound.data.VoiceEffect
+import com.voicechanger.funnysound.databinding.FragmentVoiceEffectBinding
 import com.voicechanger.funnysound.ui.recorder.voice_effect.bg_music.BgMusicFragment
 import com.voicechanger.funnysound.utils.toFloatValue
+import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.util.logging.Handler
 
 class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, BgMusicFragment.BgMusicVolumeCallback {
     private var binding: FragmentVoiceEffectBinding? = null
@@ -55,16 +53,21 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
 
     private var isFromRecordings = false
 
-
-
     private var bgPlayer: ExoPlayer? = null
-
 
     private var exoPlayer: ExoPlayer? = null
     private var updateSeekBarRunnable: Runnable? = null
     private val handler = android.os.Handler(Looper.getMainLooper())
     private var isUserSeeking = false
 
+    private var selectedPitch = 1.0f
+    private var selectedSpeed = 1.0f
+
+    private var isBgMusicAdded = false
+
+    val savingDialog by lazy {
+        Dialog(mActivity!!)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,11 +117,35 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
             binding?.viewPager?.adapter = adapter
             binding?.viewPager?.isUserInputEnabled = false
 
-            binding?.ivIcon?.setOnClickListener {
-                val voicePath = getFilePathFromContentUri(audioPath?.toUri()!!,requireContext())
-                mixAndSave(requireContext(), voicePath.toString(), "bgmusics/bgmusic.mp3")
+            binding?.btnSave?.setOnClickListener {
+                pausePlayer()
+                showSavingDialog(activity)
+                val voicePath = if (isFromRecordings) getFilePathFromContentUri(audioPath?.toUri()!!,requireContext()) else audioPath
+             //   val voicePath = getFilePathFromContentUri(audioPath?.toUri()!!,requireContext())
+                mixAndSaveWithPitchSpeed(requireContext(), voicePath.toString(), "bgmusics/bgmusic.mp3")
             }
 
+        }
+    }
+
+    private fun pausePlayer(){
+        exoPlayer?.let { player ->
+            if (player.isPlaying) {
+                player.pause()
+                binding?.btnPlayPause?.setImageResource(R.drawable.ic_play_32)
+            } else {
+                player.play()
+                binding?.btnPlayPause?.setImageResource(R.drawable.ic_pause_32)
+            }
+        }
+        bgPlayer?.let { bgPlayer->
+            if (bgPlayer.isPlaying){
+                bgPlayer.pause()
+            }else{
+                if (isBgMusicAdded){
+                    bgPlayer.play()
+                }
+            }
         }
     }
 
@@ -131,45 +158,51 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
         return outFile.absolutePath
     }
 
-    fun mixAndSave(
+    fun mixAndSaveWithPitchSpeed(
         context: Context,
         voicePath: String,
-        assetBgPath: String // e.g. "bgmusics/rain.wav"
+        assetBgPath: String, // "bgmusics/rain.wav"
     ) {
-        // 1️⃣ Copy BG music from assets to cache
+        // 1️⃣ Copy BG music from assets
         val bgMusicFile = File(context.cacheDir, "bg_temp.wav")
         copyAssetToFile(context, assetBgPath, bgMusicFile)
 
-        // 2️⃣ Temp output file (before saving to MediaStore)
-        val tempOutput = File(context.cacheDir, "mixed_temp.wav")
+        // 2️⃣ Temp output file
+        val currentName = "${System.currentTimeMillis()}"
+        val tempOutput = File(context.cacheDir, "$currentName.wav")
 
-        // 3️⃣ FFmpeg command to mix
+
         val command = arrayOf(
             "-i", voicePath,
             "-i", bgMusicFile.absolutePath,
-            "-filter_complex", "[0:a][1:a]amix=inputs=2:duration=longest:dropout_transition=0",
-            "-c:a", "pcm_s16le", // WAV format
+            "-filter_complex",
+            "[0:a]asetrate=44100*${selectedPitch},atempo=${selectedSpeed}[voice];" +
+                    "[voice][1:a]amix=inputs=2:duration=first:dropout_transition=0",
+            "-c:a", "pcm_s16le",
             tempOutput.absolutePath
         )
 
+        // 4️⃣ Run
         FFmpegKit.executeAsync(command.joinToString(" ")) { session ->
             val returnCode = session.returnCode
             if (returnCode.isValueSuccess) {
-                // 4️⃣ Save using your function
                 val finalPath = saveAudioToStorage(context, tempOutput)
                 (context as? Activity)?.runOnUiThread {
-                    Toast.makeText(context, "Saved at: $finalPath", Toast.LENGTH_LONG).show()
+                    savingDialog.dismiss()
+                  //  Toast.makeText(context, "Saved at: $finalPath", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, mActivity?.getString(R.string.audio_saved), Toast.LENGTH_LONG).show()
+                    findNavController().navigate(VoiceEffectFragmentDirections.actionVoiceEffectToPreviewFragment())
                 }
             } else {
                 (context as? Activity)?.runOnUiThread {
+                    savingDialog.dismiss()
                     Toast.makeText(context, "Mixing failed!", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
-
     fun saveAudioToStorage(context: Context, sourceFile: File): String? {
-        val filename = "${System.currentTimeMillis()}.wav"
+        val filename = "mixed-${System.currentTimeMillis()}.wav"
         var audioUri: Uri? = null
         var audioPath: String? = null
 
@@ -231,6 +264,10 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
     private fun changePitchOfSound(speed: Float,pitch: Float) {
         mActivity?.let { activity ->
             try {
+
+                selectedPitch = pitch
+                selectedSpeed = speed
+
                 // Get the current URI of the audio
                 val uri = if (isFromRecordings) {
                     getFilePathFromContentUri(audioPath?.toUri()!!, activity)
@@ -260,6 +297,7 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
 
 
     private fun startBgMusic() {
+        isBgMusicAdded = true
         if (bgPlayer == null) {
             bgPlayer = ExoPlayer.Builder(requireContext()).build()
 
@@ -268,7 +306,7 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
             val bgItem = MediaItem.fromUri(Uri.fromFile(File(bgPath)))
 
             bgPlayer?.setMediaItem(bgItem)
-            bgPlayer?.volume = 0.3f // keep background soft
+          //  bgPlayer?.volume = 0.3f // keep background soft
             bgPlayer?.repeatMode = Player.REPEAT_MODE_ONE
             bgPlayer?.prepare()
         }
@@ -334,6 +372,15 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
                         binding?.btnPlayPause?.setImageResource(R.drawable.ic_pause_32)
                     }
                 }
+                bgPlayer?.let { bgPlayer->
+                    if (bgPlayer.isPlaying){
+                        bgPlayer.pause()
+                    }else{
+                        if (isBgMusicAdded){
+                            bgPlayer.play()
+                        }
+                    }
+                }
             }
 
             // Seekbar change listener
@@ -383,13 +430,6 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
     }
 
 
-    private fun updateSeekBar() {
-        exoPlayer?.let { player ->
-            val currentPosition = player.currentPosition
-            binding?.seekBar?.progress = currentPosition.toInt()
-            binding?.tvCurrent?.text = formatTime(currentPosition.toInt())
-        }
-    }
 
     override fun onValuesAdjusted(
         position: Int, speedProgress : Int, pitchProgress : Int
@@ -542,6 +582,52 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
         }
     }
 
+
+    override fun onMusicVolumeChanged(
+        progress: Int,
+        item: VoiceEffect
+    ) {
+       //change bg music.
+        bgPlayer?.volume = progress.toFloat()
+    }
+
+    override fun onMusicItemClick(position: Int) {
+        startBgMusic()
+    }
+
+
+    fun copyAssetToCache(context: Context, assetFileName: String): String {
+        val cacheFile = File(context.cacheDir, assetFileName.substringAfterLast("/"))
+        if (!cacheFile.exists()) {
+            context.assets.open(assetFileName).use { input ->
+                FileOutputStream(cacheFile).use { output ->
+                    input.copyTo(output)
+                }
+            }
+        }
+        return cacheFile.absolutePath
+    }
+
+
+    fun showSavingDialog(context: Context) {
+
+        val view = LayoutInflater.from(context).inflate(R.layout.dialog_saving, null)
+        savingDialog.setContentView(view)
+        savingDialog.setCancelable(false)
+        //  Set rounded background to dialog window
+        savingDialog.window?.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_rounded_constraintlayout))
+        //  Set the dialog width to match_parent after setting content
+        val marginInDp = 16
+        val displayMetrics = context.resources.displayMetrics
+        val marginInPx = (marginInDp * displayMetrics.density).toInt()
+        val screenWidth = displayMetrics.widthPixels
+        val dialogWidth = screenWidth - (marginInPx * 2) // Subtract margin from both sides
+        savingDialog.window?.setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+
+        savingDialog.show()
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mActivity = requireActivity()
@@ -560,16 +646,6 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
         bgPlayer?.release()
         bgPlayer = null
     }
-
-    override fun onVolumeChanged(
-        value: Int,
-        item: VoiceEffect
-    ) {
-       //change bg music.
-
-        startBgMusic()
-    }
-
 
     inner class VoicePagerAdapter(
         fragmentManager: FragmentManager, lifecycle: Lifecycle
@@ -598,15 +674,4 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
     }
 
 
-    fun copyAssetToCache(context: Context, assetFileName: String): String {
-        val cacheFile = File(context.cacheDir, assetFileName.substringAfterLast("/"))
-        if (!cacheFile.exists()) {
-            context.assets.open(assetFileName).use { input ->
-                FileOutputStream(cacheFile).use { output ->
-                    input.copyTo(output)
-                }
-            }
-        }
-        return cacheFile.absolutePath
-    }
 }

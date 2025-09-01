@@ -61,8 +61,9 @@ class BgMusicAdapter(
                     img.setImageResource(v.iconResId)
                     root.setOnClickListener {
                         if (position !=0) expandItem(item.originalIndex)
-                        onParentClick(v)
-                        listener.onVolumeChanged(-1, item.voiceEffect)
+                        listener.onBgMusicItemClick(position)
+                    //    onParentClick(v)
+                        //listener.onMusicVolumeChanged(-1, item.voiceEffect)
                     }
                 }
             }
@@ -80,15 +81,17 @@ class BgMusicAdapter(
                     tvVoiceEffect.text = "Volume"
                     tv30.text = "100"
                     seekBarVoiceEffect.max = 100
+                 //   seekBarVoiceEffect.min = 0
                     seekBarVoiceEffect.progress = 50
 
                     root.setOnClickListener {
                        // collapseItem()
+                     //   listener.onBgMusicItemClick(position)
                     }
 
                     seekBarVoiceEffect.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                            listener.onVolumeChanged(progress, item.voiceEffect)
+                            listener.onMusicVolumeChanged(progress, item.voiceEffect)
                         }
                         override fun onStartTrackingTouch(seekBar: SeekBar?) {}
                         override fun onStopTrackingTouch(seekBar: SeekBar?) {}
@@ -155,5 +158,8 @@ class BgMusicAdapter(
 }
 
 interface BgMusicVolumeChangeListener{
-    fun onVolumeChanged(value : Int, item : VoiceEffect)
+
+    fun onBgMusicItemClick(position : Int)
+
+    fun onMusicVolumeChanged(progress : Int, item : VoiceEffect)
 }

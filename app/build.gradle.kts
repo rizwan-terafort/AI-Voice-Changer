@@ -81,5 +81,6 @@ dependencies {
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.ui) // optional, agar UI chahiye
     implementation(libs.instavision.ffmpegkit)
+    implementation(libs.lottie)
 
 }

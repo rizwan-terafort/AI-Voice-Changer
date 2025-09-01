@@ -2,7 +2,6 @@ package com.voicechanger.funnysound.ui.recorder.voice_effect.bg_music
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,19 +12,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.voicechanger.funnysound.R
 import com.voicechanger.funnysound.data.VoiceEffect
 import com.voicechanger.funnysound.databinding.FragmentBgMusicBinding
-import com.voicechanger.funnysound.databinding.FragmentVoicesBinding
-import com.voicechanger.funnysound.ui.recorder.voice_effect.SpeedAdjustListener
 import com.voicechanger.funnysound.ui.recorder.voice_effect.VoicesAdapter
-import com.voicechanger.funnysound.ui.recorder.voice_effect.VoicesFragment
 
 class BgMusicFragment : Fragment(), BgMusicVolumeChangeListener {
-    private var binding : FragmentBgMusicBinding? = null
+    private var binding: FragmentBgMusicBinding? = null
 
     private val voiceEffects = mutableListOf<VoiceEffect>()
 
 
-
-    private lateinit var adapter:  BgMusicAdapter
+    private lateinit var adapter: BgMusicAdapter
 
     private val spanCount = 3
 
@@ -34,7 +29,7 @@ class BgMusicFragment : Fragment(), BgMusicVolumeChangeListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentBgMusicBinding.inflate(inflater,container,false)
+        binding = FragmentBgMusicBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -45,11 +40,13 @@ class BgMusicFragment : Fragment(), BgMusicVolumeChangeListener {
     }
 
     private fun setupVoiceEffects() {
-        voiceEffects.addAll(listOf(
-            VoiceEffect(0,"Default", R.drawable.ic_mic_new,50f,50f),
-            VoiceEffect(1,"Girl", R.drawable.ic_mic_new, 50f, 50f),
-            VoiceEffect(2,"Boy", R.drawable.ic_mic_new, 50f, 50f),
-        ))
+        voiceEffects.addAll(
+            listOf(
+                VoiceEffect(0, "Default", R.drawable.ic_mic_new, 50f, 50f),
+                VoiceEffect(1, "Girl", R.drawable.ic_mic_new, 50f, 50f),
+                VoiceEffect(2, "Boy", R.drawable.ic_mic_new, 50f, 50f),
+            )
+        )
     }
 
     private fun setupRecyclerView() {
@@ -59,7 +56,11 @@ class BgMusicFragment : Fragment(), BgMusicVolumeChangeListener {
             spanCount = 3,
             onParentClick = { effect ->
                 // parent item click
-                Toast.makeText(requireContext(), "Parent clicked: ${effect.name}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Parent clicked: ${effect.name}",
+                    Toast.LENGTH_SHORT
+                ).show()
             },
             this@BgMusicFragment
         )
@@ -91,15 +92,21 @@ class BgMusicFragment : Fragment(), BgMusicVolumeChangeListener {
     }
 
 
-    private var callback : BgMusicVolumeCallback? = null
-    override fun onVolumeChanged(
-        value: Int,
-        item: VoiceEffect
-    ) {
-       callback?.onVolumeChanged(value, item)
+    private var callback: BgMusicVolumeCallback? = null
+    override fun onBgMusicItemClick(position: Int) {
+        callback?.onMusicItemClick(position)
     }
 
-    interface BgMusicVolumeCallback{
-        fun onVolumeChanged(value : Int, item : VoiceEffect)
+    override fun onMusicVolumeChanged(
+        progress: Int,
+        item: VoiceEffect
+    ) {
+        callback?.onMusicVolumeChanged(progress, item)
+    }
+
+    interface BgMusicVolumeCallback {
+        fun onMusicVolumeChanged(progress: Int, item: VoiceEffect)
+
+        fun onMusicItemClick(position: Int)
     }
 }

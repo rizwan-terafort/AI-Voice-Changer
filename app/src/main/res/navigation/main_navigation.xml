@@ -64,6 +64,31 @@
 <!--            android:name="recording"-->
 <!--            app:argType="com.voicechanger.funnysound.data.Recording"/>-->
 
+        <action
+            android:id="@+id/action_voiceEffect_to_PreviewFragment"
+            app:destination="@id/preview_fragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/homeFragment"
+            />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/preview_fragment"
+        android:name="com.voicechanger.funnysound.ui.recorder.preview.VoicePreviewFragment"
+        tools:layout="@layout/fragment_preview">
+
+        <action
+            android:id="@+id/actionPreviewFragmentToVoiceEffect"
+            app:destination="@id/voice_effect_fragment"
+            />
+
+        <action
+            android:id="@+id/actionPreviewFragmentHome"
+            app:destination="@id/homeFragment"
+            />
+
+
     </fragment>
 
 </navigation>

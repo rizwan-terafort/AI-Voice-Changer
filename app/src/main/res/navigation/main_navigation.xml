@@ -24,6 +24,11 @@
             android:id="@+id/actionHomeToTextToVoice"
             app:destination="@id/text_input_fragment"
             />
+
+        <action
+            android:id="@+id/actionHomeToVoiceToText"
+            app:destination="@id/voice_to_text_fragment"
+            />
     </fragment>
 
     <fragment
@@ -98,7 +103,14 @@
     <fragment
         android:id="@+id/text_input_fragment"
         android:name="com.voicechanger.funnysound.ui.text_to_voice.InputTextFragment"
-        tools:layout="@layout/fragment_input_text">
+        tools:layout="@layout/fragment_input_text"/>
+
+
+
+    <fragment
+        android:id="@+id/voice_to_text_fragment"
+        android:name="com.voicechanger.funnysound.ui.voice_to_text.VoiceToTextFragment"
+        tools:layout="@layout/fragment_voice_to_text">
 
     </fragment>
 

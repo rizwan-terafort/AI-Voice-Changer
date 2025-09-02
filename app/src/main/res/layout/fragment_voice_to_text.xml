@@ -1,0 +1,297 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color"
+    android:paddingHorizontal="@dimen/_10sdp"
+    tools:context="com.voicechanger.funnysound.ui.home.HomeFragment">
+
+
+
+
+
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:src="@drawable/ic_cross_white"
+        android:paddingVertical="@dimen/_10sdp"
+        android:paddingEnd="@dimen/_5sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/outfit_bold"
+        android:text="@string/speech_to_text"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_15ssp"
+        android:layout_marginTop="@dimen/_15ssp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/back"
+        />
+
+    <TextView
+        android:id="@+id/tv_convert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/outfit_regular"
+        android:text="@string/convert_your_voice"
+        android:textColor="@color/unselected_color"
+        android:textSize="@dimen/_10ssp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_record_voice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_convert"
+        android:background="@drawable/bg_card_normal"
+        android:layout_marginTop="@dimen/_18sdp"
+        android:paddingStart="@dimen/_10sdp"
+        android:paddingTop="@dimen/_10sdp">
+
+        <!-- Mic illustration on right -->
+        <ImageView
+            android:id="@+id/img_text_to_voice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_mic_new"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/tv_text_to_voice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/record_voice"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/_14ssp"
+            android:fontFamily="@font/outfit_bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/img_text_to_voice"
+            app:layout_constraintHorizontal_bias="0.0" />
+
+        <!-- Subtitle -->
+        <TextView
+            android:id="@+id/tv_change_text_to_voice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/speak_and_we_will_transcribe"
+            android:textColor="@color/unselected_color"
+            android:textSize="@dimen/_10ssp"
+            android:fontFamily="@font/outfit_regular"
+            app:layout_constraintTop_toBottomOf="@id/tv_text_to_voice"
+            app:layout_constraintStart_toStartOf="@id/tv_text_to_voice"
+            app:layout_constraintEnd_toEndOf="@id/tv_text_to_voice"
+            android:layout_marginTop="2dp" />
+
+        <!-- Record Button -->
+        <LinearLayout
+            android:id="@+id/record_button"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="@dimen/_18sdp"
+            android:orientation="horizontal"
+            android:background="@drawable/bg_rounded_btn_white"
+            android:backgroundTint="@color/blue1"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:gravity="center_vertical"
+            android:elevation="2dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_change_text_to_voice"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_mic_home"
+                android:layout_marginEnd="8dp"
+                app:tint="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/record"
+                android:fontFamily="@font/outfit_semibold"
+                android:textSize="@dimen/_11ssp"
+                android:textColor="@color/white"
+                />
+        </LinearLayout>
+
+
+        <View
+            android:id="@+id/view1"
+            android:layout_width="match_parent"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_height="1dp"
+            android:background="#2F333C"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintTop_toBottomOf="@id/record_button"/>
+
+        <include
+            android:id="@+id/player_recordervoice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/layout_player"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintTop_toBottomOf="@id/view1"
+            />
+
+
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_10sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/player_recordervoice"/>
+
+        <View
+            android:id="@+id/view3"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_16sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/record_button"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_text_to_voice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/cl_record_voice"
+        android:background="@drawable/bg_card_normal"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:paddingStart="@dimen/_10sdp"
+        android:paddingTop="@dimen/_10sdp">
+
+        <!-- Mic illustration on right -->
+        <ImageView
+            android:id="@+id/img_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/im_play_"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/tv_record_voice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/upload_voice"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/_14ssp"
+            android:fontFamily="@font/outfit_bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/img_play"
+            app:layout_constraintHorizontal_bias="0.0" />
+
+        <!-- Subtitle -->
+        <TextView
+            android:id="@+id/tv_upload_audio"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/upload_an_audio_file"
+            android:textColor="@color/unselected_color"
+            android:textSize="@dimen/_10ssp"
+            android:fontFamily="@font/outfit_regular"
+            app:layout_constraintTop_toBottomOf="@id/tv_record_voice"
+            app:layout_constraintStart_toStartOf="@id/tv_record_voice"
+            app:layout_constraintEnd_toEndOf="@id/tv_record_voice"
+            android:layout_marginTop="2dp" />
+
+        <!-- Record Button -->
+        <LinearLayout
+            android:id="@+id/upload_button"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="@dimen/_18sdp"
+            android:orientation="horizontal"
+            android:background="@drawable/bg_rounded_btn_white"
+            android:backgroundTint="@color/blue1"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:gravity="center_vertical"
+            android:elevation="2dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_upload_audio"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_upload"
+                android:layout_marginEnd="8dp"
+                app:tint="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/upload"
+                android:fontFamily="@font/outfit_semibold"
+                android:textSize="@dimen/_11ssp"
+                android:textColor="@color/white"
+                />
+        </LinearLayout>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_16sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/upload_button"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/btn_generate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/cl_text_to_voice"
+        android:layout_marginTop="@dimen/_22sdp"
+        android:paddingVertical="@dimen/_5sdp"
+        android:background="@drawable/bg_rounded_constraintlayout_gradient">
+
+        <TextView
+            android:id="@+id/tv_generate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/outfit_semibold"
+            android:text="@string/generate_text"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_14ssp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center"
+
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/outfit_light"
+            android:text="@string/watch_an_ad"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_10ssp"
+            app:layout_constraintTop_toBottomOf="@id/tv_generate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

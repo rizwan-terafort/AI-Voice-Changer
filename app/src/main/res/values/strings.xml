@@ -51,5 +51,12 @@
     <string name="yo_can_type_words_sentences_or_scripts">You can type words, sentences or scripts</string>
     <string name="generate_voice">Generate Voice</string>
     <string name="watch_an_ad">Watch an ad</string>
+    <string name="convert_your_voice">Convert your voice into text instantly.</string>
+    <string name="record_voice">Record Voice</string>
+    <string name="speak_and_we_will_transcribe">Speak and we\'ll transcribe</string>
+    <string name="upload_voice">Upload Voice</string>
+    <string name="upload_an_audio_file">Upload an audio file</string>
+    <string name="upload">Upload</string>
+    <string name="generate_text">Generate Text</string>
 
 </resources>

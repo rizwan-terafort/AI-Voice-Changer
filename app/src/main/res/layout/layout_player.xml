@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_player"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/_12sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:backgroundTint="@color/gray02"
+        android:background="@drawable/bg_rounded_constraintlayout">
+
+
+        <ImageView
+            android:id="@+id/ivIcon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:src="@drawable/ic_pause_32"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/seekBar"
+            app:layout_constraintVertical_chainStyle="packed"
+            android:layout_marginEnd="8dp"/>
+
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/dummy_title"
+            android:textSize="@dimen/_12ssp"
+            android:fontFamily="@font/outfit_regular"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toEndOf="@id/ivIcon"
+            app:layout_constraintEnd_toStartOf="@id/btn_cross"
+            app:layout_constraintTop_toTopOf="@id/ivIcon"
+            app:layout_constraintBottom_toBottomOf="@id/ivIcon"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="12dp"/>
+
+        <ImageView
+            android:id="@+id/btn_cross"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:src="@drawable/ic_cross_white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/ivIcon"
+            app:layout_constraintBottom_toBottomOf="@id/ivIcon"
+            app:tint="@color/gray01" />
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/ivIcon"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:progressDrawable="@drawable/seekbar_progress_new"
+            android:thumb="@drawable/thumb_audio"
+            android:thumbOffset="0dp"
+            android:splitTrack="false"
+            android:minHeight="6dp"
+            android:maxHeight="6dp"
+            android:max="100"
+            android:progress="40"/>
+
+
+
+        <!-- Current time -->
+        <TextView
+            android:id="@+id/tvCurrent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="01:32"
+            android:textSize="14sp"
+            android:textColor="@color/unselected_color"
+            app:layout_constraintStart_toStartOf="@id/ivIcon"
+            app:layout_constraintTop_toBottomOf="@id/seekBar"/>
+
+        <!-- Total time -->
+        <TextView
+            android:id="@+id/tvTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="03:40"
+            android:textSize="14sp"
+            android:textColor="@color/unselected_color"
+            app:layout_constraintEnd_toEndOf="@id/btn_cross"
+            app:layout_constraintTop_toBottomOf="@id/seekBar"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

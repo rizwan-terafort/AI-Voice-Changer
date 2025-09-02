@@ -17,6 +17,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.core.content.ContextCompat
@@ -65,7 +66,17 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
 
     private var isBgMusicAdded = false
 
+    private var isEffectApplied = false
+
     val savingDialog by lazy {
+        Dialog(mActivity!!)
+    }
+
+    val saveWithoutEffectDialog by lazy {
+        Dialog(mActivity!!)
+    }
+
+    val discardDialog by lazy {
         Dialog(mActivity!!)
     }
 
@@ -109,7 +120,7 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
                 playRecording(recording?.uri!!)
             }
 
-            clickListeners()
+            clickListeners(activity)
 
             val adapter = VoicePagerAdapter(childFragmentManager, lifecycle)
             adapter.addFragment(VoicesFragment())
@@ -118,11 +129,16 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
             binding?.viewPager?.isUserInputEnabled = false
 
             binding?.btnSave?.setOnClickListener {
-                pausePlayer()
-                showSavingDialog(activity)
-                val voicePath = if (isFromRecordings) getFilePathFromContentUri(audioPath?.toUri()!!,requireContext()) else audioPath
-             //   val voicePath = getFilePathFromContentUri(audioPath?.toUri()!!,requireContext())
-                mixAndSaveWithPitchSpeed(requireContext(), voicePath.toString(), "bgmusics/bgmusic.mp3")
+                if (isEffectApplied){
+                    pausePlayer()
+                    showSavingDialog(activity)
+                    val voicePath = if (isFromRecordings) getFilePathFromContentUri(audioPath?.toUri()!!,requireContext()) else audioPath
+                    //   val voicePath = getFilePathFromContentUri(audioPath?.toUri()!!,requireContext())
+                    mixAndSaveWithPitchSpeed(requireContext(), voicePath.toString(), "bgmusics/bgmusic.mp3")
+                }else{
+                    showSaveWithoutEffectDialog(activity)
+                }
+
             }
 
         }
@@ -437,6 +453,7 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
         val actualSpeed = speedProgress.toFloatValue()
         val actualPitch = pitchProgress.toFloatValue()
         changePitchOfSound(actualSpeed, actualPitch)
+        isEffectApplied = true
     }
 
     override fun onItemClick(
@@ -445,13 +462,19 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
     ) {
         //here change the pitch
         changePitchOfSound(item.speed, item.pitch)
+        isEffectApplied = true
     }
 
 
-    private fun clickListeners() {
+    private fun clickListeners(activity: FragmentActivity) {
         binding.apply {
             this?.back?.setOnClickListener {
-                findNavController().popBackStack()
+                if (isEffectApplied){
+                    showDiscardDialog(activity)
+                }else{
+                    findNavController().popBackStack()
+                }
+
             }
 
             this?.tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -592,6 +615,7 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
     }
 
     override fun onMusicItemClick(position: Int) {
+        isEffectApplied = true
         startBgMusic()
     }
 
@@ -609,7 +633,7 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
     }
 
 
-    fun showSavingDialog(context: Context) {
+    fun showSavingDialog(context: FragmentActivity) {
 
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_saving, null)
         savingDialog.setContentView(view)
@@ -626,6 +650,72 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
 
 
         savingDialog.show()
+    }
+
+    fun showDiscardDialog(context: FragmentActivity) {
+
+        val view = LayoutInflater.from(context).inflate(R.layout.dialog_discard, null)
+        discardDialog.setContentView(view)
+        discardDialog.setCancelable(false)
+        //  Set rounded background to dialog window
+        discardDialog.window?.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_rounded_constraintlayout))
+        //  Set the dialog width to match_parent after setting content
+        val marginInDp = 16
+        val displayMetrics = context.resources.displayMetrics
+        val marginInPx = (marginInDp * displayMetrics.density).toInt()
+        val screenWidth = displayMetrics.widthPixels
+        val dialogWidth = screenWidth - (marginInPx * 2) // Subtract margin from both sides
+        discardDialog.window?.setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+        val btnExit = discardDialog.findViewById<TextView>(R.id.btn_exit)
+        val btnContinueEditing = discardDialog.findViewById<TextView>(R.id.btn_continue_editing)
+
+        btnContinueEditing.setOnClickListener {
+            discardDialog.dismiss()
+        }
+
+        btnExit.setOnClickListener {
+            discardDialog.dismiss()
+            findNavController().popBackStack()
+        }
+
+            discardDialog.show()
+    }
+
+
+        fun showSaveWithoutEffectDialog(context: FragmentActivity) {
+
+        val view = LayoutInflater.from(context).inflate(R.layout.dialog_warning, null)
+            saveWithoutEffectDialog.setContentView(view)
+            saveWithoutEffectDialog.setCancelable(false)
+        //  Set rounded background to dialog window
+            saveWithoutEffectDialog.window?.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_rounded_constraintlayout))
+        //  Set the dialog width to match_parent after setting content
+        val marginInDp = 16
+        val displayMetrics = context.resources.displayMetrics
+        val marginInPx = (marginInDp * displayMetrics.density).toInt()
+        val screenWidth = displayMetrics.widthPixels
+        val dialogWidth = screenWidth - (marginInPx * 2) // Subtract margin from both sides
+            saveWithoutEffectDialog.window?.setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+        val btnSave= saveWithoutEffectDialog.findViewById<TextView>(R.id.btn_save)
+        val btnContinueEditing = saveWithoutEffectDialog.findViewById<TextView>(R.id.btn_continue_editing)
+
+        btnContinueEditing.setOnClickListener {
+            saveWithoutEffectDialog.dismiss()
+        }
+
+        btnSave.setOnClickListener {
+            saveWithoutEffectDialog.dismiss()
+
+            pausePlayer()
+            showSavingDialog(context)
+            val voicePath = if (isFromRecordings) getFilePathFromContentUri(audioPath?.toUri()!!,requireContext()) else audioPath
+            //   val voicePath = getFilePathFromContentUri(audioPath?.toUri()!!,requireContext())
+            mixAndSaveWithPitchSpeed(requireContext(), voicePath.toString(), "bgmusics/bgmusic.mp3")
+        }
+
+            saveWithoutEffectDialog.show()
     }
 
     override fun onAttach(context: Context) {

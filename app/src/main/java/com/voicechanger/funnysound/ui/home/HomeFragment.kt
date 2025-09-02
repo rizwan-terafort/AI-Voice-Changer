@@ -50,6 +50,9 @@ class HomeFragment : Fragment() {
             binding?.recordButton?.setOnClickListener {
                goToRecorder()
             }
+            binding?.writeButton?.setOnClickListener {
+                findNavController().navigate(MainFragmentDirections.actionHomeToTextToVoice())
+            }
         }
 
     }

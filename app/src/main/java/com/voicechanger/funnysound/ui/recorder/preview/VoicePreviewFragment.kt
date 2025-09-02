@@ -25,11 +25,12 @@ import androidx.navigation.fragment.findNavController
 import com.voicechanger.funnysound.R
 import com.voicechanger.funnysound.data.Recording
 import com.voicechanger.funnysound.databinding.FragmentPreviewBinding
+import com.voicechanger.funnysound.utils.AppUtils
 import java.io.File
 
 class VoicePreviewFragment : Fragment() {
 
-    private var binding : FragmentPreviewBinding? = null
+    private var binding: FragmentPreviewBinding? = null
 
     private var recording: Recording? = null
 
@@ -44,15 +45,15 @@ class VoicePreviewFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentPreviewBinding.inflate(inflater,container,false)
+        binding = FragmentPreviewBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mActivity?.let { activity->
+        mActivity?.let { activity ->
             getAllRecordings(activity).let { theList ->
-                if (theList.isNotEmpty()){
+                if (theList.isNotEmpty()) {
                     val latestRec = theList[0]
                     recording = latestRec
                     playRecording(latestRec.uri)
@@ -64,13 +65,19 @@ class VoicePreviewFragment : Fragment() {
         }
     }
 
-    private fun clickListeners(){
+    private fun clickListeners() {
         binding?.apply {
             btnAddMoreEffect.setOnClickListener {
-                findNavController().navigate(VoicePreviewFragmentDirections.actionPreviewFragmentToVoiceEffect(recording?.uri.toString(), isFromRecordings = true))
+                // findNavController().navigate(VoicePreviewFragmentDirections.actionPreviewFragmentToVoiceEffect(recording?.uri.toString(), isFromRecordings = true))
+                val bundle = Bundle()
+                bundle.putString("audioPath", recording?.uri.toString())
+                bundle.putBoolean("isFromRecordings", true)
+                findNavController().navigate(R.id.action_global_to_voice_effect_fragment, bundle)
             }
             back.setOnClickListener {
-                findNavController().navigate(VoicePreviewFragmentDirections.actionPreviewFragmentHome())
+                AppUtils.getMain(activity).showToolbar()
+                AppUtils.getMain(activity).showBottomNavigationView()
+                findNavController().navigate(R.id.action_global_to_home_fragment)
             }
         }
     }
@@ -264,8 +271,10 @@ class VoicePreviewFragment : Fragment() {
     private fun handleBackPress(activity: FragmentActivity) {
         val onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (!activity.isFinishing && !activity.isDestroyed){
-                    findNavController().navigate(VoicePreviewFragmentDirections.actionPreviewFragmentHome())
+                if (!activity.isFinishing && !activity.isDestroyed) {
+                    AppUtils.getMain(activity).showToolbar()
+                    AppUtils.getMain(activity).showBottomNavigationView()
+                    findNavController().navigate(R.id.action_global_to_home_fragment)
                 }
 
             }
@@ -274,15 +283,15 @@ class VoicePreviewFragment : Fragment() {
     }
 
     private var mActivity: FragmentActivity? = null
-          override fun onAttach(context: Context) {
-             super.onAttach(context)
-             mActivity = requireActivity()
-         }
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mActivity = requireActivity()
+    }
 
-         override fun onDetach() {
-             super.onDetach()
-             mActivity = null
-         }
+    override fun onDetach() {
+        super.onDetach()
+        mActivity = null
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -17,6 +17,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -39,7 +40,7 @@ import java.io.FileOutputStream
 
 class RecorderFragment : Fragment() {
 
-    private var binding : FragmentRecorderBinding? = null
+    private var binding: FragmentRecorderBinding? = null
     private var mActivity: FragmentActivity? = null
 
     private lateinit var audioFile: File
@@ -62,58 +63,60 @@ class RecorderFragment : Fragment() {
 
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentRecorderBinding.inflate(inflater,container, false)
+        binding = FragmentRecorderBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mActivity?.let { activity->
+        mActivity?.let { activity ->
             AppUtils.getMain(activity).hideToolbar()
             AppUtils.getMain(activity).hideBottomNavigationView()
 
-            clickListeners()
+            clickListeners(activity)
+            handleBackPress(activity)
 
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO)
-                != PackageManager.PERMISSION_GRANTED
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(), Manifest.permission.RECORD_AUDIO
+                ) != PackageManager.PERMISSION_GRANTED
             ) {
-                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.RECORD_AUDIO), 1001)
+                ActivityCompat.requestPermissions(
+                    requireActivity(), arrayOf(Manifest.permission.RECORD_AUDIO), 1001
+                )
                 return
             }
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED
+                if (ContextCompat.checkSelfPermission(
+                        requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ) != PackageManager.PERMISSION_GRANTED
                 ) {
-                    ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1002)
+                    ActivityCompat.requestPermissions(
+                        requireActivity(), arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1002
+                    )
                     return
                 }
             }
-
 
 
         }
     }
 
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
-    private fun clickListeners(){
+    private fun clickListeners(activity: FragmentActivity) {
         binding?.close?.setOnClickListener {
-            findNavController().popBackStack()
-            AppUtils.getMain(activity).showToolbar()
-            AppUtils.getMain(activity).showBottomNavigationView()
+            goBack(activity)
         }
 
         binding?.btnRecord?.setOnClickListener {
 
-            if (startRecord){
+            if (startRecord) {
                 startRecording()
                 startRecord = false
-            }else if (isPaused){
+            } else if (isPaused) {
                 resumeRecording()
-            }else if (!isPaused){
+            } else if (!isPaused) {
                 pauseRecording()
             }
             updateViews()
@@ -132,6 +135,24 @@ class RecorderFragment : Fragment() {
         }
     }
 
+    private fun handleBackPress(activity: FragmentActivity) {
+        val onBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (!activity.isFinishing && !activity.isDestroyed) {
+                    goBack(activity)
+                }
+
+            }
+        }
+        activity.onBackPressedDispatcher.addCallback(activity, onBackPressedCallback)
+    }
+
+    private fun goBack(activity: FragmentActivity){
+        findNavController().popBackStack()
+        AppUtils.getMain(activity).showToolbar()
+        AppUtils.getMain(activity).showBottomNavigationView()
+    }
+
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     private fun startRecording() {
         isRecording = true
@@ -143,11 +164,7 @@ class RecorderFragment : Fragment() {
         val bufferSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat)
 
         audioRecord = AudioRecord(
-            MediaRecorder.AudioSource.MIC,
-            sampleRate,
-            channelConfig,
-            audioFormat,
-            bufferSize
+            MediaRecorder.AudioSource.MIC, sampleRate, channelConfig, audioFormat, bufferSize
         )
 
         val fileName = "${System.currentTimeMillis()}.pcm"
@@ -187,15 +204,19 @@ class RecorderFragment : Fragment() {
                 outputStream.close()
             }
         }
-        binding?.btnRecord?.let { mActivity?.let { it1 -> Glide.with(it1) }?.load(R.drawable.ic_recording)?.into(it) }
+        binding?.btnRecord?.let {
+            mActivity?.let { it1 -> Glide.with(it1) }?.load(R.drawable.ic_recording)?.into(it)
+        }
     }
 
     private fun pauseRecording() {
         if (isRecording) {
             isPaused = true
-           pauseTimer()
+            pauseTimer()
         }
-        binding?.btnRecord?.let { activity?.let { it1 -> Glide.with(it1) }?.load(R.drawable.ic_paused)?.into(it) }
+        binding?.btnRecord?.let {
+            activity?.let { it1 -> Glide.with(it1) }?.load(R.drawable.ic_paused)?.into(it)
+        }
     }
 
     private fun resumeRecording() {
@@ -221,7 +242,10 @@ class RecorderFragment : Fragment() {
 
         outputFile = savedPath ?: wavFile.absolutePath
 
-        findNavController().navigate(RecorderFragmentDirections.actionRecorderFragmentToVoiceEffect(savedPath.toString()))
+        // findNavController().navigate(RecorderFragmentDirections.actionRecorderFragmentToVoiceEffect(savedPath.toString()))
+        val bundle = Bundle()
+        bundle.putString("audioPath", savedPath.toString())
+        findNavController().navigate(R.id.action_global_to_voice_effect_fragment, bundle)
     }
 
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
@@ -252,7 +276,7 @@ class RecorderFragment : Fragment() {
         binding?.btnRepeat?.visibility = View.GONE
 
         // Start fresh recording
-      //  startRecord = false
+        //  startRecord = false
         startRecording()
         updateViews()
     }
@@ -280,7 +304,6 @@ class RecorderFragment : Fragment() {
     }
 
 
-
     fun saveAudioToStorage(context: Context, sourceFile: File): String? {
         val filename = "${System.currentTimeMillis()}.wav"
         var audioUri: Uri? = null
@@ -300,7 +323,8 @@ class RecorderFragment : Fragment() {
                     }
 
                     // ✅ Insert into Audio collection
-                    audioUri = resolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, contentValues)
+                    audioUri =
+                        resolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, contentValues)
 
                     audioUri?.let { uri ->
                         resolver.openOutputStream(uri)?.use { outputStream ->
@@ -310,14 +334,14 @@ class RecorderFragment : Fragment() {
                         }
 
                         // Approx path (not guaranteed on Q+)
-                        audioPath = Environment
-                            .getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
-                            .absolutePath + "/Recordings/" + filename
+                        audioPath =
+                            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).absolutePath + "/Recordings/" + filename
                     }
                 }
             } else {
                 // ✅ For Android 9 and below
-                val musicDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
+                val musicDir =
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
                 val recordingsDir = File(musicDir, "Recordings")
                 if (!recordingsDir.exists()) recordingsDir.mkdirs()
 
@@ -332,7 +356,9 @@ class RecorderFragment : Fragment() {
                 audioPath = audioFile.absolutePath
 
                 // notify gallery/media apps
-                MediaScannerConnection.scanFile(context, arrayOf(audioFile.absolutePath), null, null)
+                MediaScannerConnection.scanFile(
+                    context, arrayOf(audioFile.absolutePath), null, null
+                )
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -346,14 +372,14 @@ class RecorderFragment : Fragment() {
         if (isPaused) {
             mActivity?.let { activity ->
                 binding?.btnRecord?.let {
-                   // Glide.with(activity).load(R.drawable.ic_paused).into(it)
+                    // Glide.with(activity).load(R.drawable.ic_paused).into(it)
                     it.setImageResource(R.drawable.ic_paused)
                 }
             }
         } else {
             mActivity?.let { activity ->
                 binding?.btnRecord?.let {
-                 //   Glide.with(activity).load(R.drawable.ic_recording).into(it)
+                    //   Glide.with(activity).load(R.drawable.ic_recording).into(it)
                     it.setImageResource(R.drawable.ic_recording)
                     binding?.btnDone?.visibility = View.VISIBLE
                     binding?.btnRepeat?.visibility = View.VISIBLE

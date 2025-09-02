@@ -47,5 +47,9 @@
     <string name="discard_changes">Discard Changes?</string>
     <string name="your_progress_loss">Your progress will be lost, Are you sure you\nwant to discard?</string>
     <string name="exit">Exit</string>
+    <string name="enter_text">Enter Text</string>
+    <string name="yo_can_type_words_sentences_or_scripts">You can type words, sentences or scripts</string>
+    <string name="generate_voice">Generate Voice</string>
+    <string name="watch_an_ad">Watch an ad</string>
 
 </resources>

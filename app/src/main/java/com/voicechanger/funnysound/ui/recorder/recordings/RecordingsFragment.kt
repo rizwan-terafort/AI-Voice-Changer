@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.voicechanger.funnysound.R
 import com.voicechanger.funnysound.data.Recording
 import com.voicechanger.funnysound.databinding.FragmentRecordingsBinding
 import com.voicechanger.funnysound.ui.recorder.recordings.RecordingsFragmentDirections
@@ -92,12 +93,11 @@ class RecordingsFragment : Fragment() {
     private fun loadRecordings() {
         val recordings = getAllRecordings(requireContext())
         val adapter = RecordingAdapter(recordings) { recording ->
-            findNavController().navigate(
-                RecordingsFragmentDirections.actionRecordingFragmentToVoiceEffect(
-                    recording.uri.toString(),isFromRecordings = true
-                )
-            )
-
+           // findNavController().navigate(RecordingsFragmentDirections.actionRecordingFragmentToVoiceEffect(recording.uri.toString(),isFromRecordings = true))
+            val bundle = Bundle()
+            bundle.putString("audioPath", recording?.uri.toString())
+            bundle.putBoolean("isFromRecordings", true)
+            findNavController().navigate(R.id.action_global_to_voice_effect_fragment, bundle)
         }
 
         binding?.rvRecordings?.layoutManager = LinearLayoutManager(requireContext())

@@ -20,6 +20,10 @@
             app:destination="@id/recorder_fragment"
             />
 
+        <action
+            android:id="@+id/actionHomeToTextToVoice"
+            app:destination="@id/text_input_fragment"
+            />
     </fragment>
 
     <fragment
@@ -31,20 +35,20 @@
             app:destination="@id/recordings_fragment"
             />
 
-        <action
-            android:id="@+id/actionRecorderFragmentToVoiceEffect"
-            app:destination="@id/voice_effect_fragment"
-            />
+<!--        <action-->
+<!--            android:id="@+id/actionRecorderFragmentToVoiceEffect"-->
+<!--            app:destination="@id/voice_effect_fragment"-->
+<!--            />-->
     </fragment>
 
     <fragment
         android:id="@+id/recordings_fragment"
         android:name="com.voicechanger.funnysound.ui.recorder.recordings.RecordingsFragment"
         tools:layout="@layout/fragment_recordings">
-        <action
-            android:id="@+id/actionRecordingFragmentToVoiceEffect"
-            app:destination="@id/voice_effect_fragment"
-            />
+<!--        <action-->
+<!--            android:id="@+id/actionRecordingFragmentToVoiceEffect"-->
+<!--            app:destination="@id/voice_effect_fragment"-->
+<!--            />-->
     </fragment>
 
     <fragment
@@ -78,17 +82,36 @@
         android:name="com.voicechanger.funnysound.ui.recorder.preview.VoicePreviewFragment"
         tools:layout="@layout/fragment_preview">
 
-        <action
-            android:id="@+id/actionPreviewFragmentToVoiceEffect"
-            app:destination="@id/voice_effect_fragment"
-            />
+<!--        <action-->
+<!--            android:id="@+id/actionPreviewFragmentToVoiceEffect"-->
+<!--            app:destination="@id/voice_effect_fragment"-->
+<!--            />-->
 
-        <action
-            android:id="@+id/actionPreviewFragmentHome"
-            app:destination="@id/homeFragment"
-            />
+<!--        <action-->
+<!--            android:id="@+id/actionPreviewFragmentHome"-->
+<!--            app:destination="@id/homeFragment"-->
+<!--            />-->
 
 
     </fragment>
+
+    <fragment
+        android:id="@+id/text_input_fragment"
+        android:name="com.voicechanger.funnysound.ui.text_to_voice.InputTextFragment"
+        tools:layout="@layout/fragment_input_text">
+
+    </fragment>
+
+
+    <action
+        android:id="@+id/action_global_to_voice_effect_fragment"
+        app:destination="@id/voice_effect_fragment"
+        />
+
+    <action
+        android:id="@+id/action_global_to_home_fragment"
+        app:destination="@id/homeFragment"
+        />
+
 
 </navigation>

@@ -19,15 +19,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <ImageView
-        android:id="@+id/icon"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/back"
-        android:src="@drawable/ic_music_white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:lottie_rawRes="@raw/saved_anim"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="false" />
+
+
+<!--    <ImageView-->
+<!--        android:id="@+id/icon"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:src="@drawable/ic_music_white"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/back"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"/>-->
 
     <TextView
         android:id="@+id/tv_saved"
@@ -37,7 +48,7 @@
         android:text="@string/audio_saved"
         android:textColor="@color/white"
         android:textSize="@dimen/_15ssp"
-        app:layout_constraintTop_toBottomOf="@id/icon"
+        app:layout_constraintTop_toBottomOf="@id/loader"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />

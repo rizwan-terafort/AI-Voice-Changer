@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import com.voicechanger.funnysound.R
 import com.voicechanger.funnysound.databinding.ActivityMainBinding
 import com.voicechanger.funnysound.utils.changeStatusBarColor
@@ -17,6 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private  var binding: ActivityMainBinding ?= null
+    private var navController: NavController? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +35,9 @@ class MainActivity : AppCompatActivity() {
         }
         changeStatusBarColor(R.color.bg_color, this@MainActivity, false)
 
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
     }
 
 
@@ -58,6 +64,22 @@ class MainActivity : AppCompatActivity() {
                 val sys = insets.getInsets(WindowInsetsCompat.Type.systemBars())
                 v.updatePadding(left = sys.left, right = sys.right, bottom = 0)
                 insets
+            }
+        }
+    }
+    override fun onBackPressed() {
+        val count: Int = supportFragmentManager.backStackEntryCount
+        if (count > 0) {
+            supportFragmentManager.popBackStack()
+        } else {
+            when (navController?.currentDestination?.id) {
+                R.id.homeFragment -> {
+
+                }
+                else -> {
+
+                    super.onBackPressed()
+                }
             }
         }
     }

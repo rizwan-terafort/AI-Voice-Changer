@@ -45,7 +45,8 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
-class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, BgMusicFragment.BgMusicVolumeCallback {
+class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback,
+    BgMusicFragment.BgMusicVolumeCallback {
     private var binding: FragmentVoiceEffectBinding? = null
     private var mActivity: FragmentActivity? = null
 
@@ -129,13 +130,20 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
             binding?.viewPager?.isUserInputEnabled = false
 
             binding?.btnSave?.setOnClickListener {
-                if (isEffectApplied){
+                if (isEffectApplied) {
                     pausePlayer()
                     showSavingDialog(activity)
-                    val voicePath = if (isFromRecordings) getFilePathFromContentUri(audioPath?.toUri()!!,requireContext()) else audioPath
+                    val voicePath = if (isFromRecordings) getFilePathFromContentUri(
+                        audioPath?.toUri()!!,
+                        requireContext()
+                    ) else audioPath
                     //   val voicePath = getFilePathFromContentUri(audioPath?.toUri()!!,requireContext())
-                    mixAndSaveWithPitchSpeed(requireContext(), voicePath.toString(), "bgmusics/bgmusic.mp3")
-                }else{
+                    mixAndSaveWithPitchSpeed(
+                        requireContext(),
+                        voicePath.toString(),
+                        "bgmusics/bgmusic.mp3"
+                    )
+                } else {
                     showSaveWithoutEffectDialog(activity)
                 }
 
@@ -144,7 +152,7 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
         }
     }
 
-    private fun pausePlayer(){
+    private fun pausePlayer() {
         exoPlayer?.let { player ->
             if (player.isPlaying) {
                 player.pause()
@@ -154,11 +162,11 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
                 binding?.btnPlayPause?.setImageResource(R.drawable.ic_pause_32)
             }
         }
-        bgPlayer?.let { bgPlayer->
-            if (bgPlayer.isPlaying){
+        bgPlayer?.let { bgPlayer ->
+            if (bgPlayer.isPlaying) {
                 bgPlayer.pause()
-            }else{
-                if (isBgMusicAdded){
+            } else {
+                if (isBgMusicAdded) {
                     bgPlayer.play()
                 }
             }
@@ -205,8 +213,12 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
                 val finalPath = saveAudioToStorage(context, tempOutput)
                 (context as? Activity)?.runOnUiThread {
                     savingDialog.dismiss()
-                  //  Toast.makeText(context, "Saved at: $finalPath", Toast.LENGTH_LONG).show()
-                    Toast.makeText(context, mActivity?.getString(R.string.audio_saved), Toast.LENGTH_LONG).show()
+                    //  Toast.makeText(context, "Saved at: $finalPath", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        context,
+                        mActivity?.getString(R.string.audio_saved),
+                        Toast.LENGTH_LONG
+                    ).show()
                     findNavController().navigate(VoiceEffectFragmentDirections.actionVoiceEffectToPreviewFragment())
                 }
             } else {
@@ -217,6 +229,7 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
             }
         }
     }
+
     fun saveAudioToStorage(context: Context, sourceFile: File): String? {
         val filename = "mixed-${System.currentTimeMillis()}.wav"
         var audioUri: Uri? = null
@@ -236,7 +249,8 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
                     }
 
                     // ✅ Insert into Audio collection
-                    audioUri = resolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, contentValues)
+                    audioUri =
+                        resolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, contentValues)
 
                     audioUri?.let { uri ->
                         resolver.openOutputStream(uri)?.use { outputStream ->
@@ -253,7 +267,8 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
                 }
             } else {
                 // ✅ For Android 9 and below
-                val musicDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
+                val musicDir =
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
                 val recordingsDir = File(musicDir, "Recordings")
                 if (!recordingsDir.exists()) recordingsDir.mkdirs()
 
@@ -268,7 +283,12 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
                 audioPath = audioFile.absolutePath
 
                 // notify gallery/media apps
-                MediaScannerConnection.scanFile(context, arrayOf(audioFile.absolutePath), null, null)
+                MediaScannerConnection.scanFile(
+                    context,
+                    arrayOf(audioFile.absolutePath),
+                    null,
+                    null
+                )
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -277,7 +297,7 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
         return audioPath
     }
 
-    private fun changePitchOfSound(speed: Float,pitch: Float) {
+    private fun changePitchOfSound(speed: Float, pitch: Float) {
         mActivity?.let { activity ->
             try {
 
@@ -305,7 +325,7 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
                     // Continue playing from the current position without resetting
                     exoPlayer?.play()
                 }
-            }catch (e : Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
@@ -322,7 +342,7 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
             val bgItem = MediaItem.fromUri(Uri.fromFile(File(bgPath)))
 
             bgPlayer?.setMediaItem(bgItem)
-          //  bgPlayer?.volume = 0.3f // keep background soft
+            //  bgPlayer?.volume = 0.3f // keep background soft
             bgPlayer?.repeatMode = Player.REPEAT_MODE_ONE
             bgPlayer?.prepare()
         }
@@ -388,11 +408,11 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
                         binding?.btnPlayPause?.setImageResource(R.drawable.ic_pause_32)
                     }
                 }
-                bgPlayer?.let { bgPlayer->
-                    if (bgPlayer.isPlaying){
+                bgPlayer?.let { bgPlayer ->
+                    if (bgPlayer.isPlaying) {
                         bgPlayer.pause()
-                    }else{
-                        if (isBgMusicAdded){
+                    } else {
+                        if (isBgMusicAdded) {
                             bgPlayer.play()
                         }
                     }
@@ -446,9 +466,8 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
     }
 
 
-
     override fun onValuesAdjusted(
-        position: Int, speedProgress : Int, pitchProgress : Int
+        position: Int, speedProgress: Int, pitchProgress: Int
     ) {
         val actualSpeed = speedProgress.toFloatValue()
         val actualPitch = pitchProgress.toFloatValue()
@@ -469,9 +488,9 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
     private fun clickListeners(activity: FragmentActivity) {
         binding.apply {
             this?.back?.setOnClickListener {
-                if (isEffectApplied){
+                if (isEffectApplied) {
                     showDiscardDialog(activity)
-                }else{
+                } else {
                     findNavController().popBackStack()
                 }
 
@@ -482,8 +501,9 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
                     when (tab.position) {
                         0 -> {
                             // First tab clicked (Change Voice)
-                          binding?.viewPager?.currentItem = 0
+                            binding?.viewPager?.currentItem = 0
                         }
+
                         1 -> {
                             // Second tab clicked (Background Effects)
                             binding?.viewPager?.currentItem = 1
@@ -610,7 +630,7 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
         progress: Int,
         item: VoiceEffect
     ) {
-       //change bg music.
+        //change bg music.
         bgPlayer?.volume = progress.toFloat()
     }
 
@@ -639,7 +659,12 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
         savingDialog.setContentView(view)
         savingDialog.setCancelable(false)
         //  Set rounded background to dialog window
-        savingDialog.window?.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_rounded_constraintlayout))
+        savingDialog.window?.setBackgroundDrawable(
+            ContextCompat.getDrawable(
+                context,
+                R.drawable.bg_rounded_constraintlayout
+            )
+        )
         //  Set the dialog width to match_parent after setting content
         val marginInDp = 16
         val displayMetrics = context.resources.displayMetrics
@@ -658,7 +683,12 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
         discardDialog.setContentView(view)
         discardDialog.setCancelable(false)
         //  Set rounded background to dialog window
-        discardDialog.window?.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_rounded_constraintlayout))
+        discardDialog.window?.setBackgroundDrawable(
+            ContextCompat.getDrawable(
+                context,
+                R.drawable.bg_rounded_constraintlayout
+            )
+        )
         //  Set the dialog width to match_parent after setting content
         val marginInDp = 16
         val displayMetrics = context.resources.displayMetrics
@@ -679,27 +709,33 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
             findNavController().popBackStack()
         }
 
-            discardDialog.show()
+        discardDialog.show()
     }
 
 
-        fun showSaveWithoutEffectDialog(context: FragmentActivity) {
+    fun showSaveWithoutEffectDialog(context: FragmentActivity) {
 
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_warning, null)
-            saveWithoutEffectDialog.setContentView(view)
-            saveWithoutEffectDialog.setCancelable(false)
+        saveWithoutEffectDialog.setContentView(view)
+        saveWithoutEffectDialog.setCancelable(false)
         //  Set rounded background to dialog window
-            saveWithoutEffectDialog.window?.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_rounded_constraintlayout))
+        saveWithoutEffectDialog.window?.setBackgroundDrawable(
+            ContextCompat.getDrawable(
+                context,
+                R.drawable.bg_rounded_constraintlayout
+            )
+        )
         //  Set the dialog width to match_parent after setting content
         val marginInDp = 16
         val displayMetrics = context.resources.displayMetrics
         val marginInPx = (marginInDp * displayMetrics.density).toInt()
         val screenWidth = displayMetrics.widthPixels
         val dialogWidth = screenWidth - (marginInPx * 2) // Subtract margin from both sides
-            saveWithoutEffectDialog.window?.setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+        saveWithoutEffectDialog.window?.setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        val btnSave= saveWithoutEffectDialog.findViewById<TextView>(R.id.btn_save)
-        val btnContinueEditing = saveWithoutEffectDialog.findViewById<TextView>(R.id.btn_continue_editing)
+        val btnSave = saveWithoutEffectDialog.findViewById<TextView>(R.id.btn_save)
+        val btnContinueEditing =
+            saveWithoutEffectDialog.findViewById<TextView>(R.id.btn_continue_editing)
 
         btnContinueEditing.setOnClickListener {
             saveWithoutEffectDialog.dismiss()
@@ -710,12 +746,15 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback, Bg
 
             pausePlayer()
             showSavingDialog(context)
-            val voicePath = if (isFromRecordings) getFilePathFromContentUri(audioPath?.toUri()!!,requireContext()) else audioPath
+            val voicePath = if (isFromRecordings) getFilePathFromContentUri(
+                audioPath?.toUri()!!,
+                requireContext()
+            ) else audioPath
             //   val voicePath = getFilePathFromContentUri(audioPath?.toUri()!!,requireContext())
             mixAndSaveWithPitchSpeed(requireContext(), voicePath.toString(), "bgmusics/bgmusic.mp3")
         }
 
-            saveWithoutEffectDialog.show()
+        saveWithoutEffectDialog.show()
     }
 
     override fun onAttach(context: Context) {

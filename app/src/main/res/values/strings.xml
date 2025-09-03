@@ -61,5 +61,18 @@
     <string name="your_text_is_ready">Your Text is Ready</string>
     <string name="copy">Copy</string>
     <string name="share">Share</string>
+    <string name="settings">Settings</string>
+    <string name="upgrage_to_pro">Upgrade to Pro!</string>
+    <string name="get_unlimited">Get unlimited effects, prank sounds, and an\nad-free experience.</string>
+    <string name="explore_pro_features">Explore Pro Features</string>
+    <string name="history">History</string>
+    <string name="change_language">Change Language</string>
+    <string name="rate_us">Rate Us</string>
+    <string name="share_the_app">Share the app</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_of_use">Terms of Use</string>
+    <string name="general">General</string>
+    <string name="select_language">Select Language</string>
+    <string name="done">Done</string>
 
 </resources>

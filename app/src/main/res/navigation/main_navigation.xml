@@ -29,6 +29,11 @@
             android:id="@+id/actionHomeToVoiceToText"
             app:destination="@id/voice_to_text_fragment"
             />
+
+        <action
+            android:id="@+id/actionSettingsToLanguage"
+            app:destination="@id/language_fragment"
+            />
     </fragment>
 
     <fragment
@@ -142,6 +147,11 @@
         android:id="@+id/voice_to_text_converter"
         android:name="com.voicechanger.funnysound.ui.voice_to_text.VoiceToTextConverter"
         tools:layout="@layout/fragment_voice_to_text_converter"/>
+
+    <fragment
+        android:id="@+id/language_fragment"
+        android:name="com.voicechanger.funnysound.ui.language.LanguageFragment"
+        tools:layout="@layout/fragment_language"/>
 
 
     <action

@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.voicechanger.funnysound.ui.home.HomeFragment
+import com.voicechanger.funnysound.ui.settings.SettingsFragment
 
 class MainPagerAdapter(
     fragmentManager: FragmentManager, lifecycle: Lifecycle
@@ -21,7 +22,7 @@ class MainPagerAdapter(
         return when (position) {
             0 -> HomeFragment()
             1 -> HomeFragment()
-            2 -> HomeFragment()
+            2 -> SettingsFragment()
 
             else -> HomeFragment()
         }

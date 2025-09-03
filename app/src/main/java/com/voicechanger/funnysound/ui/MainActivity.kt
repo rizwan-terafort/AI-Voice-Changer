@@ -38,6 +38,27 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
+
+        binding?.bottomNavView?.setOnItemSelectedListener { menuItem->
+            when(menuItem.itemId){
+                R.id.nav_home ->{
+                    binding?.btnPremium?.visibility = View.VISIBLE
+                    binding?.title?.text = getString(R.string.ai_voice_changer)
+                    MainFragment.selectedItem.value = 0
+                }
+                R.id.nav_history ->{
+                    binding?.btnPremium?.visibility = View.GONE
+                    binding?.title?.text = getString(R.string.history)
+                    MainFragment.selectedItem.value = 1
+                }
+                R.id.nav_settings ->{
+                    binding?.btnPremium?.visibility = View.GONE
+                    binding?.title?.text = getString(R.string.settings)
+                    MainFragment.selectedItem.value = 2
+                }
+            }
+            true
+        }
     }
 
 

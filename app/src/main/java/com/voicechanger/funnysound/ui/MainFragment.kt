@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import com.voicechanger.funnysound.databinding.FragmentMainBinding
+import com.voicechanger.funnysound.ui.settings.SettingsFragment
 
 
 class MainFragment : Fragment() {
@@ -38,7 +39,7 @@ class MainFragment : Fragment() {
             val adapter = MainPagerAdapter(childFragmentManager, lifecycle)
             adapter.addFragment(HomeFragment())
             adapter.addFragment(HomeFragment())
-            adapter.addFragment(HomeFragment())
+            adapter.addFragment(SettingsFragment())
             binding?.viewPager?.adapter = adapter
             binding?.viewPager?.isUserInputEnabled = false
 

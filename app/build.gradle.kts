@@ -80,8 +80,10 @@ dependencies {
     annotationProcessor(libs.glide.compiler)
 
     implementation(libs.media3.exoplayer)
-    implementation(libs.media3.ui) // optional, agar UI chahiye
+    implementation(libs.media3.ui)
     implementation(libs.instavision.ffmpegkit)
     implementation(libs.lottie)
 
+    //vosk lib for voice to text
+    implementation(libs.vosk)
 }

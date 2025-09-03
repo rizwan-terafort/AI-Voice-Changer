@@ -24,3 +24,6 @@
 # Firebase Crashlytics rule to prevent stack trace obfuscation
 -keep class com.google.firebase.crashlytics.** { *; }
 -keep class com.google.firebase.crashlytics.** { public private *; }
+
+-keep class org.vosk.** { *; }
+-keep class com.alphacephei.** { *; }

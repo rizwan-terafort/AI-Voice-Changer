@@ -35,12 +35,24 @@
         android:id="@+id/recorder_fragment"
         android:name="com.voicechanger.funnysound.ui.recorder.record.RecorderFragment"
         tools:layout="@layout/fragment_recorder">
+
+        <argument
+            android:name="isFromVoiceToText"
+            app:argType="boolean"
+            android:defaultValue="false"/>
+
         <action
             android:id="@+id/actionRecorderFragmentToRecordingsFragment"
             app:destination="@id/recordings_fragment"
             />
 
-<!--        <action-->
+        <action
+            android:id="@+id/action_recorder_to_voice_converter"
+            app:destination="@id/voice_to_text_converter"
+            />
+
+
+        <!--        <action-->
 <!--            android:id="@+id/actionRecorderFragmentToVoiceEffect"-->
 <!--            app:destination="@id/voice_effect_fragment"-->
 <!--            />-->
@@ -112,7 +124,24 @@
         android:name="com.voicechanger.funnysound.ui.voice_to_text.VoiceToTextFragment"
         tools:layout="@layout/fragment_voice_to_text">
 
+
+        <action
+            android:id="@+id/action_voiceToText_to_recorderFragment"
+            app:destination="@id/recorder_fragment"
+            />
+
+
+        <action
+            android:id="@+id/action_voiceToText_to_voice_converter"
+            app:destination="@id/voice_to_text_converter"
+            />
+
     </fragment>
+
+    <fragment
+        android:id="@+id/voice_to_text_converter"
+        android:name="com.voicechanger.funnysound.ui.voice_to_text.VoiceToTextConverter"
+        tools:layout="@layout/fragment_voice_to_text_converter"/>
 
 
     <action

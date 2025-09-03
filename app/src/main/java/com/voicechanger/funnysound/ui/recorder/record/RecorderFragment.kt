@@ -3,6 +3,7 @@ package com.voicechanger.funnysound.ui.recorder.record
 import android.Manifest
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.AudioFormat
 import android.media.AudioRecord
@@ -14,20 +15,28 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.voicechanger.funnysound.R
 import com.voicechanger.funnysound.databinding.FragmentRecorderBinding
+import com.voicechanger.funnysound.ui.recorder.voice_effect.VoicesFragment.VoiceFragmentCallback
+import com.voicechanger.funnysound.ui.voice_to_text.VoiceToTextConverter
 import com.voicechanger.funnysound.utils.AppUtils
 import com.voicechanger.funnysound.utils.PcmToWavConverter
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +46,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.util.Locale
 
 class RecorderFragment : Fragment() {
 
@@ -60,6 +70,19 @@ class RecorderFragment : Fragment() {
     private var recordingStartTime: Long = 0L
     private var pausedTime: Long = 0L
     private var isTimerRunning = false
+
+    private var isFromVoiceToText = false
+
+    private var speechRecognizer: SpeechRecognizer? = null
+    private var recognizerIntent: Intent? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            val args = RecorderFragmentArgs.fromBundle(it)
+            isFromVoiceToText = args.isFromVoiceToText
+        }
+    }
 
 
     override fun onCreateView(
@@ -155,58 +178,66 @@ class RecorderFragment : Fragment() {
 
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     private fun startRecording() {
-        isRecording = true
-        isPaused = false
-        startTimer()
-        val sampleRate = 44100
-        val channelConfig = AudioFormat.CHANNEL_IN_MONO
-        val audioFormat = AudioFormat.ENCODING_PCM_16BIT
-        val bufferSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat)
 
-        audioRecord = AudioRecord(
-            MediaRecorder.AudioSource.MIC, sampleRate, channelConfig, audioFormat, bufferSize
-        )
+        if (isFromVoiceToText){
+            setupSpeechRecognizer()
+            startListening()
+        }else{
+            isRecording = true
+            isPaused = false
+            startTimer()
+            val sampleRate = 44100
+            val channelConfig = AudioFormat.CHANNEL_IN_MONO
+            val audioFormat = AudioFormat.ENCODING_PCM_16BIT
+            val bufferSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat)
 
-        val fileName = "${System.currentTimeMillis()}.pcm"
-        audioFile = File(requireContext().cacheDir, fileName) // Temporary raw PCM file
+            audioRecord = AudioRecord(
+                MediaRecorder.AudioSource.MIC, sampleRate, channelConfig, audioFormat, bufferSize
+            )
+
+            val fileName = "${System.currentTimeMillis()}.pcm"
+            audioFile = File(requireContext().cacheDir, fileName) // Temporary raw PCM file
 
 
-        audioRecord.startRecording()
+            audioRecord.startRecording()
 
-        lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                val buffer = ShortArray(bufferSize)
-                val outputStream = FileOutputStream(audioFile)
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    val buffer = ShortArray(bufferSize)
+                    val outputStream = FileOutputStream(audioFile)
 
-                while (isRecording) {
-                    if (isPaused) {
-                        // Just wait without reading/writing audio
-                        Thread.sleep(100)
-                        continue
-                    }
-
-                    val read = audioRecord.read(buffer, 0, buffer.size)
-                    if (read > 0) {
-                        val byteBuffer = ByteArray(read * 2)
-                        var i = 0
-                        for (s in buffer.take(read)) {
-                            byteBuffer[i++] = (s.toInt() and 0x00FF).toByte()
-                            byteBuffer[i++] = ((s.toInt() shr 8) and 0xFF).toByte()
+                    while (isRecording) {
+                        if (isPaused) {
+                            // Just wait without reading/writing audio
+                            Thread.sleep(100)
+                            continue
                         }
-                        outputStream.write(byteBuffer)
 
-                        val amplitude = buffer.maxOrNull()?.toInt() ?: 0
-                        withContext(Dispatchers.Main) {
-                            binding?.barVisualizer?.addAmplitude(amplitude)
+                        val read = audioRecord.read(buffer, 0, buffer.size)
+                        if (read > 0) {
+                            val byteBuffer = ByteArray(read * 2)
+                            var i = 0
+                            for (s in buffer.take(read)) {
+                                byteBuffer[i++] = (s.toInt() and 0x00FF).toByte()
+                                byteBuffer[i++] = ((s.toInt() shr 8) and 0xFF).toByte()
+                            }
+                            outputStream.write(byteBuffer)
+
+                            val amplitude = buffer.maxOrNull()?.toInt() ?: 0
+                            withContext(Dispatchers.Main) {
+                                binding?.barVisualizer?.addAmplitude(amplitude)
+                            }
                         }
                     }
+                    outputStream.close()
                 }
-                outputStream.close()
+            }
+            binding?.btnRecord?.let {
+                mActivity?.let { it1 -> Glide.with(it1) }?.load(R.drawable.ic_recording)?.into(it)
             }
         }
-        binding?.btnRecord?.let {
-            mActivity?.let { it1 -> Glide.with(it1) }?.load(R.drawable.ic_recording)?.into(it)
-        }
+
+
     }
 
     private fun pauseRecording() {
@@ -242,10 +273,17 @@ class RecorderFragment : Fragment() {
 
         outputFile = savedPath ?: wavFile.absolutePath
 
-        // findNavController().navigate(RecorderFragmentDirections.actionRecorderFragmentToVoiceEffect(savedPath.toString()))
-        val bundle = Bundle()
-        bundle.putString("audioPath", savedPath.toString())
-        findNavController().navigate(R.id.action_global_to_voice_effect_fragment, bundle)
+        if (isFromVoiceToText){
+            setFragmentResult("audioRecorded", bundleOf())
+            findNavController().popBackStack()
+        }else{
+            // findNavController().navigate(RecorderFragmentDirections.actionRecorderFragmentToVoiceEffect(savedPath.toString()))
+            val bundle = Bundle()
+            bundle.putString("audioPath", savedPath.toString())
+            findNavController().navigate(R.id.action_global_to_voice_effect_fragment, bundle)
+        }
+
+
     }
 
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
@@ -386,6 +424,10 @@ class RecorderFragment : Fragment() {
                 }
             }
         }
+        if (isFromVoiceToText){
+            binding?.btnDone?.visibility = View.GONE
+            binding?.btnRepeat?.visibility = View.GONE
+        }
     }
 
 
@@ -421,4 +463,54 @@ class RecorderFragment : Fragment() {
         recordingStartTime = 0L
         binding?.tvTime?.text = "00:00:00"
     }
+
+
+
+    private fun setupSpeechRecognizer() {
+        if (SpeechRecognizer.isRecognitionAvailable(requireContext())) {
+            speechRecognizer = SpeechRecognizer.createSpeechRecognizer(requireContext())
+
+            speechRecognizer?.setRecognitionListener(object : RecognitionListener {
+                override fun onReadyForSpeech(params: Bundle?) {
+                    Toast.makeText(context, "Listening...", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onBeginningOfSpeech() {}
+                override fun onRmsChanged(rmsdB: Float) {}
+                override fun onBufferReceived(buffer: ByteArray?) {}
+                override fun onEndOfSpeech() {}
+                override fun onError(error: Int) {
+                    Toast.makeText(context, "Error: $error", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onResults(results: Bundle?) {
+                    val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                    val text = matches?.joinToString(" ") ?: ""
+                    // binding?.textView?.text = text
+                   // Toast.makeText(mActivity,text, Toast.LENGTH_SHORT).show()
+                    VoiceToTextConverter.theText = text
+                    findNavController().navigate(RecorderFragmentDirections.actionRecorderToVoiceConverter())
+                }
+
+                override fun onPartialResults(partialResults: Bundle?) {}
+                override fun onEvent(eventType: Int, params: Bundle?) {}
+            })
+
+            recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+                putExtra(
+                    RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+                )
+                putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+                putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
+            }
+        } else {
+            Toast.makeText(context, "Speech recognition not available", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun startListening() {
+        speechRecognizer?.startListening(recognizerIntent)
+    }
+
 }

@@ -58,5 +58,8 @@
     <string name="upload_an_audio_file">Upload an audio file</string>
     <string name="upload">Upload</string>
     <string name="generate_text">Generate Text</string>
+    <string name="your_text_is_ready">Your Text is Ready</string>
+    <string name="copy">Copy</string>
+    <string name="share">Share</string>
 
 </resources>

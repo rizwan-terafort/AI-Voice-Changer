@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.voicechanger.funnysound.R
 import com.voicechanger.funnysound.data.VoiceEffect
 import com.voicechanger.funnysound.databinding.FragmentVoicesBinding
+import com.voicechanger.funnysound.utils.EffectType
 
 class VoicesFragment : Fragment(), SpeedAdjustListener {
     private var binding : FragmentVoicesBinding? = null
@@ -49,17 +50,71 @@ class VoicesFragment : Fragment(), SpeedAdjustListener {
             VoiceEffect(4,"Old", R.drawable.default_,0.80f, 0.95f),
             VoiceEffect(5,"Soprano", R.drawable.default_,1.70f, 1.05f),
             VoiceEffect(6,"Basso", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(7,"Reverse", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(8,"Small Robot", R.drawable.default_,1.40f, 1.15f),
-            VoiceEffect(9,"Cave", R.drawable.default_,0.90f, 0.95f),
-            VoiceEffect(10,"Squirrel", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(11,"Grim Reaper", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(12,"Nervous", R.drawable.default_,0.65f, 0.95f),
+            //   VoiceEffect(7,"Reverse", R.drawable.default_,0.65f, 0.95f),
+
+            VoiceEffect(
+                id = 7,
+                name = "Small Robot",
+                iconResId = R.drawable.default_,
+                pitch = 1.30f,   // thoda high pitch robotic feel
+                speed = 0.90f    // halki si slow for mechanical effect
+            ),
+
+            VoiceEffect(
+                id = 8,
+                name = "Cave",
+                iconResId = R.drawable.default_,
+                pitch = 1.00f,   // normal pitch
+                speed = 0.80f    ,
+                effectType = EffectType.REVERB
+            ),
+
+            VoiceEffect(
+                id = 9,
+                name = "Squirrel",
+                iconResId = R.drawable.default_,
+                pitch = 1.80f,   // high pitch chipmunk style
+                speed = 1.20f    // fast bolne ka effect
+            ),
+
+            VoiceEffect(
+                id = 10,
+                name = "Grim Reaper",
+                iconResId = R.drawable.default_,
+                pitch = 0.70f,   // low, dark tone
+                speed = 0.85f    // thoda drag feel
+            ),
+
+            VoiceEffect(
+                id = 11,
+                name = "Nervous",
+                iconResId = R.drawable.default_,
+                pitch = 1.40f,   // slightly high pitch
+                speed = 1.30f    // fast, nervous speaking effect
+            ),
+            VoiceEffect(
+                id = 12,
+                name = "Ghost",
+                iconResId = R.drawable.default_,
+                pitch = 0.70f,   // thoda low, hollow feeling
+                speed = 0.75f    // slow, dragging effect
+            ),
+
             VoiceEffect(13,"Small Alien", R.drawable.default_,0.65f, 0.95f),
             VoiceEffect(14,"Villain", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(15,"Ghost", R.drawable.default_,0.65f, 0.95f),
+            //   VoiceEffect(15,"Ghost", R.drawable.default_,0.65f, 0.95f),
             VoiceEffect(16,"Parody", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(17,"Underwater", R.drawable.default_,0.65f, 0.95f),
+
+
+            VoiceEffect(
+                id = 17,
+                name = "Underwater",
+                iconResId = R.drawable.default_,
+                pitch = 0.9f,
+                speed = 0.9f,
+                effectType = EffectType.UNDERWATER
+            ),
+
             VoiceEffect(18,"Drunk", R.drawable.default_,0.65f, 0.95f),
             VoiceEffect(19,"Phone", R.drawable.default_,0.65f, 0.95f),
             VoiceEffect(20,"Motorcycle", R.drawable.default_,0.65f, 0.95f),
@@ -79,7 +134,7 @@ class VoicesFragment : Fragment(), SpeedAdjustListener {
             VoiceEffect(34,"Alien", R.drawable.default_,0.65f, 0.95f),
             VoiceEffect(35,"Volume Envelope", R.drawable.default_,0.65f, 0.95f),
 
-        ))
+            ))
     }
 
     private fun setupRecyclerView() {

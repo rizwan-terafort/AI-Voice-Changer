@@ -84,6 +84,5 @@ dependencies {
     implementation(libs.instavision.ffmpegkit)
     implementation(libs.lottie)
 
-    //vosk lib for voice to text
-    implementation(libs.vosk)
+
 }

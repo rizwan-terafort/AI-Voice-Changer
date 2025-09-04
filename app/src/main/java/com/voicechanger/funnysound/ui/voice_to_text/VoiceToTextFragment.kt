@@ -41,9 +41,10 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.io.File
 
-import org.vosk.Model
-import org.vosk.Recognizer
-import org.vosk.android.StorageService
+//import org.vosk.Model
+//import org.vosk.Recognizer
+//import org.vosk.android.StorageService
+
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.Locale

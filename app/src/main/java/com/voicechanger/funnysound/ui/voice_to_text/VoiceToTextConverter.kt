@@ -32,14 +32,18 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.io.File
 
-import org.vosk.Model
-import org.vosk.Recognizer
-import org.vosk.android.StorageService
+
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import kotlin.coroutines.resumeWithException
 import com.voicechanger.funnysound.R
 import com.voicechanger.funnysound.utils.SpeechRecognizerHelper
+
+
+//import org.vosk.Model
+//import org.vosk.Recognizer
+//import org.vosk.android.StorageService
+
 
 class VoiceToTextConverter : Fragment() {
 
@@ -145,7 +149,7 @@ class VoiceToTextConverter : Fragment() {
         }
     }
 
-    suspend fun initModel(context: Context): Model =
+ /*   suspend fun initModel(context: Context): Model =
         suspendCancellableCoroutine { cont ->
             val modelPath = File(context.filesDir, "model").absolutePath
             StorageService.unpack(context, "model", modelPath,
@@ -187,7 +191,7 @@ class VoiceToTextConverter : Fragment() {
             transcription = "Error: ${e.message}"
         }
         transcription.trim()
-    }
+    }*/
 
 
     fun extractText(resultJson: String): String {

@@ -1,5 +1,6 @@
 package com.voicechanger.funnysound.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
@@ -11,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.voicechanger.funnysound.R
 import com.voicechanger.funnysound.databinding.ActivityMainBinding
+import com.voicechanger.funnysound.ui.onbaording.OnboardingActivity
 import com.voicechanger.funnysound.utils.changeStatusBarColor
 import com.voicechanger.funnysound.utils.hideNavigationBar
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,6 +60,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             true
+        }
+
+        binding?.btnPremium?.setOnClickListener {
+            startActivity(Intent(this@MainActivity, OnboardingActivity::class.java))
         }
     }
 

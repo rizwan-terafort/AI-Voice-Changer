@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.voicechanger.funnysound">
 
-
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="32"
@@ -11,16 +10,11 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
-
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
-
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
-
-
-
     <application
-        android:name="com.voicechanger.funnysound.VoiceChangerApplication"
+        android:name=".VoiceChangerApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -30,7 +24,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.voicechanger.funnysound.ui.splash.SplashActivity"
+            android:name=".ui.onbaording.OnboardingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.splash.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,18 +36,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.voicechanger.funnysound.ui.MainActivity"
-            android:exported="true">
-        </activity>
+            android:name=".ui.MainActivity"
+            android:exported="true"></activity>
 
         <meta-data
             android:name="firebase_performance_logcat_enabled"
             android:value="true" />
-
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
     </application>
 
 </manifest>

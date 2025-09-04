@@ -74,5 +74,10 @@
     <string name="general">General</string>
     <string name="select_language">Select Language</string>
     <string name="done">Done</string>
+    <string name="change_your_voice_instantly">Change Your Voice Instantly</string>
+    <string name="next">Next</string>
+    <string name="turn_text_into_voice">Turn Text into Voice</string>
+    <string name="speak_to_text_easily">Speak to Text Easily</string>
+    <string name="start">Start</string>
 
 </resources>

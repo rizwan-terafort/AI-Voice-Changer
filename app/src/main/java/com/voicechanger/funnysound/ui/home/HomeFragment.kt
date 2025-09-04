@@ -57,6 +57,10 @@ class HomeFragment : Fragment() {
             binding?.speechToTextCard?.setOnClickListener {
                 findNavController().navigate(MainFragmentDirections.actionHomeToVoiceToText())
             }
+
+            binding?.prankSoundCard?.setOnClickListener {
+                findNavController().navigate(MainFragmentDirections.actionHomeToPrankSound())
+            }
         }
 
     }

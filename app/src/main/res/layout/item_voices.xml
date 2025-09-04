@@ -32,6 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_5sdp"
             android:text="Police"
+            android:gravity="center_horizontal"
             android:textColor="@color/white"
             android:fontFamily="@font/outfit_regular"
             android:textSize="@dimen/_10ssp"

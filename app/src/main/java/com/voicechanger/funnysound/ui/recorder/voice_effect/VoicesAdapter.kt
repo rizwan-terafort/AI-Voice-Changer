@@ -57,7 +57,7 @@ class VoicesAdapter(
                     tvTitle.text = v.name
                     img.setImageResource(v.iconResId)
                     root.setOnClickListener {
-                        if (position !=0) expandItem(item.originalIndex)
+                        if (position !=0) expandItem(item.originalIndex) else collapseItem()
                         onParentClick(v)
                         listener.onItemClick(position, item.voiceEffect)
                     }

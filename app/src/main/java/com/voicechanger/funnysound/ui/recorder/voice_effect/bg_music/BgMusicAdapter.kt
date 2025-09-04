@@ -60,7 +60,11 @@ class BgMusicAdapter(
                     tvTitle.text = v.name
                     img.setImageResource(v.iconResId)
                     root.setOnClickListener {
-                        if (position !=0) expandItem(item.originalIndex)
+                        if (position !=0){
+                            expandItem(item.originalIndex)
+                        }else{
+                            collapseItem()
+                        }
                         listener.onBgMusicItemClick(position)
                     //    onParentClick(v)
                         //listener.onMusicVolumeChanged(-1, item.voiceEffect)

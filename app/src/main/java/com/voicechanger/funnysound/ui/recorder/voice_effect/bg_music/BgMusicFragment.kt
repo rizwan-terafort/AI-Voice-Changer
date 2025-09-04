@@ -42,9 +42,27 @@ class BgMusicFragment : Fragment(), BgMusicVolumeChangeListener {
     private fun setupVoiceEffects() {
         voiceEffects.addAll(
             listOf(
-                VoiceEffect(0, "Default", R.drawable.ic_mic_new, 50f, 50f),
-                VoiceEffect(1, "Girl", R.drawable.ic_mic_new, 50f, 50f),
-                VoiceEffect(2, "Boy", R.drawable.ic_mic_new, 50f, 50f),
+                VoiceEffect(0, "Default", R.drawable.default_, 50f, 50f),
+                VoiceEffect(1, "Bird", R.drawable.default_, 50f, 50f),
+                VoiceEffect(2, "Vehicle", R.drawable.default_, 50f, 50f),
+                VoiceEffect(3, "Cat", R.drawable.default_, 50f, 50f),
+                VoiceEffect(4, "Child", R.drawable.default_, 50f, 50f),
+                VoiceEffect(5, "Dog", R.drawable.default_, 50f, 50f),
+                VoiceEffect(6, "Door", R.drawable.default_, 50f, 50f),
+                VoiceEffect(7, "Fart", R.drawable.default_, 50f, 50f),
+                VoiceEffect(8, "Fire Work", R.drawable.default_, 50f, 50f),
+                VoiceEffect(9, "FX", R.drawable.default_, 50f, 50f),
+                VoiceEffect(10, "Gun Shot", R.drawable.default_, 50f, 50f),
+                VoiceEffect(11, "Ringtone", R.drawable.default_, 50f, 50f),
+                VoiceEffect(12, "Mosquito", R.drawable.default_, 50f, 50f),
+                VoiceEffect(13, "Ocean", R.drawable.default_, 50f, 50f),
+                VoiceEffect(14, "Police Siren", R.drawable.default_, 50f, 50f),
+                VoiceEffect(15, "Rain", R.drawable.default_, 50f, 50f),
+                VoiceEffect(16, "Siren", R.drawable.default_, 50f, 50f),
+                VoiceEffect(17, "Summer Loop", R.drawable.default_, 50f, 50f),
+                VoiceEffect(18, "Thunder", R.drawable.default_, 50f, 50f),
+                VoiceEffect(19, "Tiger", R.drawable.default_, 50f, 50f),
+                VoiceEffect(20, "Alarm", R.drawable.default_, 50f, 50f),
             )
         )
     }
@@ -56,11 +74,7 @@ class BgMusicFragment : Fragment(), BgMusicVolumeChangeListener {
             spanCount = 3,
             onParentClick = { effect ->
                 // parent item click
-                Toast.makeText(
-                    requireContext(),
-                    "Parent clicked: ${effect.name}",
-                    Toast.LENGTH_SHORT
-                ).show()
+              //  Toast.makeText(requireContext(), "Parent clicked: ${effect.name}", Toast.LENGTH_SHORT).show()
             },
             this@BgMusicFragment
         )

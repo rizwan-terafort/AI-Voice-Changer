@@ -96,8 +96,8 @@ class VoicesFragment : Fragment(), SpeedAdjustListener {
                 id = 12,
                 name = "Ghost",
                 iconResId = R.drawable.default_,
-                pitch = 0.70f,   // thoda low, hollow feeling
-                speed = 0.75f    // slow, dragging effect
+                pitch = 0.5f,   // thoda low, hollow feeling
+                speed = 0.7f    // slow, dragging effect
             ),
 
             VoiceEffect(13,"Small Alien", R.drawable.default_,0.65f, 0.95f),
@@ -115,24 +115,152 @@ class VoicesFragment : Fragment(), SpeedAdjustListener {
                 effectType = EffectType.UNDERWATER
             ),
 
-            VoiceEffect(18,"Drunk", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(19,"Phone", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(20,"Motorcycle", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(21,"Helium Gas", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(22,"Storm Wind", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(23,"Scared", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(24,"Megaphone", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(25,"Monster", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(26,"Canyon", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(27,"Big Robot", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(28,"Chipmunk", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(29,"Zombie", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(30,"Auto-wah", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(31,"Big Alien", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(32,"Sulfur Gas", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(33,"Factory", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(34,"Alien", R.drawable.default_,0.65f, 0.95f),
-            VoiceEffect(35,"Volume Envelope", R.drawable.default_,0.65f, 0.95f),
+            VoiceEffect(
+                18,
+                "Drunk",
+                R.drawable.default_,
+                pitch = 0.7f,   // low, heavy
+                speed = 0.6f    // slow, dragging
+            ),
+
+            VoiceEffect(
+                19,
+                "Phone",
+                R.drawable.default_,
+                pitch = 1.2f,   // thoda high, tinny
+                speed = 1.0f    // normal
+            ),
+
+            VoiceEffect(
+                20,
+                "Motorcycle",
+                R.drawable.default_,
+                pitch = 0.8f,   // gritty, low
+                speed = 1.3f    // fast vibration effect
+            ),
+
+            VoiceEffect(
+                21,
+                "Helium Gas",
+                R.drawable.default_,
+                pitch = 1.8f,   // super high pitch
+                speed = 1.2f    // thoda fast
+            ),
+
+            VoiceEffect(
+                22,
+                "Storm Wind",
+                R.drawable.default_,
+                pitch = 0.9f,   // slightly low
+                speed = 0.8f    // stretched, windy effect
+            ),
+
+            VoiceEffect(
+                23,
+                "Scared",
+                R.drawable.default_,
+                pitch = 1.4f,   // sharp, nervous
+                speed = 1.1f    // thoda fast
+            ),
+
+            VoiceEffect(
+                24,
+                "Megaphone",
+                R.drawable.default_,
+                pitch = 1.1f,   // thoda sharp
+                speed = 1.0f    // normal, echo/reverb sath lagana zaroori
+            ),
+
+            VoiceEffect(
+                25,
+                "Monster",
+                R.drawable.default_,
+                pitch = 0.6f,   // very deep
+                speed = 0.8f    // slow, heavy
+            ),
+
+            VoiceEffect(
+                26,
+                "Canyon",
+                R.drawable.default_,
+                pitch = 1.0f,   // normal pitch
+                speed = 0.9f    // thoda drag
+                // + echo/reverb zaroori h
+            ),
+
+            VoiceEffect(
+                27,
+                "Big Robot",
+                R.drawable.default_,
+                pitch = 0.8f,   // robotic, low
+                speed = 1.0f    // steady
+            ),
+
+            VoiceEffect(
+                28,
+                "Chipmunk",
+                R.drawable.default_,
+                pitch = 1.9f,   // very high
+                speed = 1.3f    // fast
+            ),
+
+            VoiceEffect(
+                29,
+                "Zombie",
+                R.drawable.default_,
+                pitch = 0.7f,   // deep, groaning
+                speed = 0.7f    // slow, dragging
+            ),
+
+            VoiceEffect(
+                30,
+                "Auto-wah",
+                R.drawable.default_,
+                pitch = 1.0f,
+                speed = 1.0f
+                // lekin isme wah-wah filter lagana chahiye, pitch/speed se alone kaam nahi banega
+            ),
+
+            VoiceEffect(
+                31,
+                "Big Alien",
+                R.drawable.default_,
+                pitch = 0.6f,   // deep & strange
+                speed = 1.2f    // thoda fast distortion feel
+            ),
+
+            VoiceEffect(
+                32,
+                "Sulfur Gas",
+                R.drawable.default_,
+                pitch = 1.6f,   // sharp toxic
+                speed = 1.1f
+            ),
+
+            VoiceEffect(
+                33,
+                "Factory",
+                R.drawable.default_,
+                pitch = 0.9f,   // industrial tone
+                speed = 0.8f
+            ),
+
+            VoiceEffect(
+                34,
+                "Alien",
+                R.drawable.default_,
+                pitch = 1.3f,   // unusual, sharp
+                speed = 0.9f
+            ),
+
+            VoiceEffect(
+                35,
+                "Volume Envelope",
+                R.drawable.default_,
+                pitch = 1.0f,
+                speed = 1.0f
+                // yaha pitch/speed normal rakho, lekin ADSR volume modulation lagani hoti hai
+            )
 
             ))
     }

@@ -332,20 +332,22 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback,
     }
 
 
-    private fun startBgMusic() {
+    private fun startBgMusic(position: Int) {
         isBgMusicAdded = true
         if (bgPlayer == null) {
             bgPlayer = ExoPlayer.Builder(requireContext()).build()
 
+        }
             // Copy bg music from assets → cache (ExoPlayer can’t play assets directly)
-            val bgPath = copyAssetToCache(requireContext(), "bgmusics/bgmusic.mp3")
+
+            val bgPath = if (position!=0) copyAssetToCache(requireContext(), "bgmusics/$position.mp3") else ""
             val bgItem = MediaItem.fromUri(Uri.fromFile(File(bgPath)))
 
             bgPlayer?.setMediaItem(bgItem)
             //  bgPlayer?.volume = 0.3f // keep background soft
             bgPlayer?.repeatMode = Player.REPEAT_MODE_ONE
             bgPlayer?.prepare()
-        }
+       // }
         bgPlayer?.playWhenReady = true
     }
 
@@ -482,6 +484,7 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback,
         //here change the pitch
         changePitchOfSound(item.speed, item.pitch)
         isEffectApplied = true
+        binding?.btnPlayPause?.setImageResource(R.drawable.ic_pause_32)
     }
 
 
@@ -636,7 +639,9 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback,
 
     override fun onMusicItemClick(position: Int) {
         isEffectApplied = true
-        startBgMusic()
+        startBgMusic(position)
+        exoPlayer?.play()
+        binding?.btnPlayPause?.setImageResource(R.drawable.ic_pause_32)
     }
 
 

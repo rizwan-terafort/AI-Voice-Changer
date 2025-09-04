@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -35,10 +36,10 @@ class LanguageFragment : Fragment(), LanguageSelectionAdapter.LanguageSelectionC
 
             val languageList = arrayListOf<LanguageModel>()
             languageList.add(LanguageModel(1,"en","English (Auto)", ContextCompat.getDrawable(activity,R.drawable.flag_us),true))
-            languageList.add(LanguageModel(2,"jp","Japenese", ContextCompat.getDrawable(activity,R.drawable.flag_japan),false))
+            languageList.add(LanguageModel(2,"jp","Japanese", ContextCompat.getDrawable(activity,R.drawable.flag_japan),false))
             languageList.add(LanguageModel(3,"hi","Hindi", ContextCompat.getDrawable(activity,R.drawable.flag_india),false))
             languageList.add(LanguageModel(4,"in","Indonesian", ContextCompat.getDrawable(activity,R.drawable.flag_indonesia),false))
-            languageList.add(LanguageModel(5,"sp","Spainish", ContextCompat.getDrawable(activity,R.drawable.flag_spain),false))
+            languageList.add(LanguageModel(5,"sp","Spanish", ContextCompat.getDrawable(activity,R.drawable.flag_spain),false))
 
             val adapter = LanguageSelectionAdapter(languageList,this)
             binding?.rvLanguage?.adapter = adapter
@@ -62,7 +63,7 @@ class LanguageFragment : Fragment(), LanguageSelectionAdapter.LanguageSelectionC
          }
 
     override fun onLanguageClick(language: LanguageModel?) {
-        TODO("Not yet implemented")
+        Toast.makeText(requireActivity(), language?.name, Toast.LENGTH_SHORT).show()
     }
 
     private fun goBack(activity: FragmentActivity){

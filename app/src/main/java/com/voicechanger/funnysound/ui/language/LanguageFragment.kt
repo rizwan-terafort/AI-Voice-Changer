@@ -1,6 +1,7 @@
 package com.voicechanger.funnysound.ui.language
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.findNavController
 import com.voicechanger.funnysound.databinding.FragmentLanguageBinding
 import com.voicechanger.funnysound.R
+import com.voicechanger.funnysound.ui.MainActivity
+import com.voicechanger.funnysound.ui.onbaording.OnboardingActivity
 import com.voicechanger.funnysound.utils.AppUtils
 
 class LanguageFragment : Fragment(), LanguageSelectionAdapter.LanguageSelectionClickListener {
@@ -31,8 +34,10 @@ class LanguageFragment : Fragment(), LanguageSelectionAdapter.LanguageSelectionC
         super.onViewCreated(view, savedInstanceState)
         mActivity?.let { activity ->
 
-            AppUtils.getMain(activity).hideToolbar()
-            AppUtils.getMain(activity).hideBottomNavigationView()
+           if (mActivity is MainActivity){
+               AppUtils.getMain(activity).hideToolbar()
+               AppUtils.getMain(activity).hideBottomNavigationView()
+           }
 
             val languageList = arrayListOf<LanguageModel>()
             languageList.add(LanguageModel(1,"en","English (Auto)", ContextCompat.getDrawable(activity,R.drawable.flag_us),true))
@@ -47,6 +52,10 @@ class LanguageFragment : Fragment(), LanguageSelectionAdapter.LanguageSelectionC
             handleBackPress(activity)
             binding?.back?.setOnClickListener {
                 goBack(activity)
+            }
+            binding?.btnDone?.setOnClickListener {
+                startActivity(Intent(mActivity, OnboardingActivity::class.java))
+                mActivity?.finish()
             }
         }
     }

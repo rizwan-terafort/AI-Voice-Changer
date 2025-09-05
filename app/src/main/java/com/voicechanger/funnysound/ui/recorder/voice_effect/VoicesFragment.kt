@@ -2,7 +2,6 @@ package com.voicechanger.funnysound.ui.recorder.voice_effect
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.voicechanger.funnysound.R
 import com.voicechanger.funnysound.data.VoiceEffect
 import com.voicechanger.funnysound.databinding.FragmentVoicesBinding
-import com.voicechanger.funnysound.utils.EffectType
+import com.voicechanger.funnysound.common.EffectType
 
 class VoicesFragment : Fragment(), SpeedAdjustListener {
     private var binding : FragmentVoicesBinding? = null

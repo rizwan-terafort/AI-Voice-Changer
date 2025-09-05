@@ -84,5 +84,8 @@ dependencies {
     implementation(libs.instavision.ffmpegkit)
     implementation(libs.lottie)
 
+    implementation(libs.datastore.preference)
+    implementation(libs.datastore.core)
+
 
 }

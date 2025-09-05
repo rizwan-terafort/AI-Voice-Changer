@@ -11,17 +11,23 @@ import androidx.core.view.updatePadding
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.voicechanger.funnysound.R
+import com.voicechanger.funnysound.common.DataStoreManager
+import com.voicechanger.funnysound.common.IS_ONBOARD
 import com.voicechanger.funnysound.databinding.ActivityMainBinding
 import com.voicechanger.funnysound.ui.onbaording.OnboardingActivity
 import com.voicechanger.funnysound.utils.changeStatusBarColor
 import com.voicechanger.funnysound.utils.hideNavigationBar
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private  var binding: ActivityMainBinding ?= null
     private var navController: NavController? = null
+
+    @Inject
+    lateinit var dataStoreManager: DataStoreManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,8 +69,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding?.btnPremium?.setOnClickListener {
-            startActivity(Intent(this@MainActivity, OnboardingActivity::class.java))
+            //startActivity(Intent(this@MainActivity, OnboardingActivity::class.java))
         }
+
+        dataStoreManager.writeDataStoreValue(IS_ONBOARD, true)
     }
 
 

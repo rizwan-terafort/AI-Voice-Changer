@@ -23,9 +23,11 @@ import com.voicechanger.funnysound.ui.home.HomeFragment
 import com.voicechanger.funnysound.ui.settings.SettingsFragment
 import com.voicechanger.funnysound.utils.changeStatusBarColor
 import com.voicechanger.funnysound.utils.hideNavigationBar
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class OnboardingActivity : AppCompatActivity() {
-    private  var binding: ActivityOnboardingBinding ?= null
+    private var binding: ActivityOnboardingBinding? = null
 
     companion object {
         var selectedPosition = MutableLiveData(0)
@@ -33,10 +35,11 @@ class OnboardingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        //    enableEdgeToEdge()
         binding = ActivityOnboardingBinding.inflate(layoutInflater)
         setContentView(binding?.root)
         hideNavigationBar()
+
 
         changeStatusBarColor(R.color.bg_color, this@OnboardingActivity, false)
         setViewPagerAdapter()
@@ -56,23 +59,24 @@ class OnboardingActivity : AppCompatActivity() {
     private fun setViewPagerAdapter() {
         val adapter = OnboardPagerAdapter(supportFragmentManager, lifecycle)
 
-        adapter.addFragment(HomeFragment())
-        adapter.addFragment(HomeFragment())
-        adapter.addFragment(SettingsFragment())
+        adapter.addFragment(FragmentOnboardFirst())
+        adapter.addFragment(FragmentOnboardSecond())
+        adapter.addFragment(FragmentOnboardThird())
         binding?.vpOnboard?.adapter = adapter
         binding?.vpOnboard?.isUserInputEnabled = true
 
-            binding?.vpOnboard?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    Log.d("checkPositionViewPager","$position")
-                    when(position){
-                        0-> binding?.vpOnboard?.currentItem = 0
-                        1-> binding?.vpOnboard?.currentItem = 1
-                        2-> binding?.vpOnboard?.currentItem = 2
-                    }
+        binding?.vpOnboard?.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                Log.d("checkPositionViewPager", "$position")
+                when (position) {
+                    0 -> binding?.vpOnboard?.currentItem = 0
+                    1 -> binding?.vpOnboard?.currentItem = 1
+                    2 -> binding?.vpOnboard?.currentItem = 2
                 }
-            })
+            }
+        })
 
     }
 
@@ -97,6 +101,7 @@ class OnboardingActivity : AppCompatActivity() {
                 else -> FragmentOnboardFirst()
             }
         }
+
         fun addFragment(fragment: Fragment) {
             fragmentList.add(fragment)
         }

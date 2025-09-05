@@ -182,6 +182,7 @@ class RecorderFragment : Fragment() {
         if (isFromVoiceToText){
             setupSpeechRecognizer()
             startListening()
+            startTimer()
         }else{
             isRecording = true
             isPaused = false
@@ -274,6 +275,7 @@ class RecorderFragment : Fragment() {
         outputFile = savedPath ?: wavFile.absolutePath
 
         if (isFromVoiceToText){
+            resetTimer()
             setFragmentResult("audioRecorded", bundleOf())
             findNavController().popBackStack()
         }else{

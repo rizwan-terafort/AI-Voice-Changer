@@ -1,6 +1,6 @@
 package com.voicechanger.funnysound.data
 
-import com.voicechanger.funnysound.utils.EffectType
+import com.voicechanger.funnysound.common.EffectType
 
 data class VoiceEffect(
     val id : Int,

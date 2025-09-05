@@ -169,7 +169,7 @@ class VoiceToTextFragment : Fragment() {
         }
 
         binding?.btnGenerate?.setOnClickListener {
-            findNavController().navigate(VoiceToTextFragmentDirections.actionVoiceToTextToVoiceConverter())
+          //  findNavController().navigate(VoiceToTextFragmentDirections.actionVoiceToTextToVoiceConverter())
         }
     }
 

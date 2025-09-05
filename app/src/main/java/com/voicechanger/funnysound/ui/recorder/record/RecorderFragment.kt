@@ -122,6 +122,9 @@ class RecorderFragment : Fragment() {
                 }
             }
 
+            if (isFromVoiceToText){
+                binding?.tvImport?.visibility = View.GONE
+            }
 
         }
     }
@@ -482,7 +485,11 @@ class RecorderFragment : Fragment() {
                 override fun onBufferReceived(buffer: ByteArray?) {}
                 override fun onEndOfSpeech() {}
                 override fun onError(error: Int) {
-                    Toast.makeText(context, "Error: $error", Toast.LENGTH_SHORT).show()
+                  //  Toast.makeText(context, "Error: $error", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Please try again", Toast.LENGTH_SHORT).show()
+                    findNavController().popBackStack()
+                   // VoiceToTextConverter.theText = "Error while listening"
+                   // findNavController().navigate(RecorderFragmentDirections.actionRecorderToVoiceConverter())
                 }
 
                 override fun onResults(results: Bundle?) {

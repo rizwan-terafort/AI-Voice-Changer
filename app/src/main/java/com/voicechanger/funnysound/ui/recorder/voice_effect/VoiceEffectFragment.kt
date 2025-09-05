@@ -634,7 +634,9 @@ class VoiceEffectFragment : Fragment(), VoicesFragment.VoiceFragmentCallback,
         item: VoiceEffect
     ) {
         //change bg music.
-        bgPlayer?.volume = progress.toFloat()
+     //   bgPlayer?.volume = progress.toFloat()
+        val volume = progress / 100f
+        bgPlayer?.volume = volume
     }
 
     override fun onMusicItemClick(position: Int) {

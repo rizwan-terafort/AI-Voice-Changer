@@ -262,6 +262,7 @@
         app:layout_constraintTop_toBottomOf="@id/cl_text_to_voice"
         android:layout_marginTop="@dimen/_22sdp"
         android:paddingVertical="@dimen/_5sdp"
+        android:backgroundTint="@color/unselected_color"
         android:background="@drawable/bg_rounded_constraintlayout_gradient">
 
         <TextView

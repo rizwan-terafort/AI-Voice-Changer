@@ -1,6 +1,5 @@
 package com.voicechanger.funnysound.ui.text_to_voice
 
-import ai.instavision.ffmpegkit.FFmpegKit
 import android.content.ContentValues
 import android.content.Context
 import android.media.MediaScannerConnection
@@ -18,15 +17,11 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.voicechanger.funnysound.R
 import com.voicechanger.funnysound.databinding.FragmentInputTextBinding
 import com.voicechanger.funnysound.ui.home.PrankSoundAdapter
 import com.voicechanger.funnysound.utils.AppUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream

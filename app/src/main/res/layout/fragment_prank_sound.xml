@@ -1,58 +1,76 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_color"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:background="@color/bg_color">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-        android:background="@color/bg_color">
+        android:layout_height="@dimen/_100sdp"
+        android:background="@color/bg_color"
+        >
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:collapsedTitleGravity="end"
-            app:expandedTitleGravity="start"
-            app:contentScrim="@color/bg_color"
-            app:title="Prank Sound"
+            app:collapsedTitleGravity="start"
+            app:expandedTitleMarginStart="@dimen/_10sdp"
             app:collapsedTitleTextColor="@android:color/white"
-            app:expandedTitleTextColor="@android:color/white">
+            app:contentScrim="@color/bg_color"
+            app:expandedTitleGravity="bottom"
+            app:expandedTitleTextColor="@android:color/white"
+            app:collapsedTitleTextAppearance="@style/collapsingtoolbar"
+            app:expandedTitleTextAppearance="@style/collapsingtoolbar"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:title="Prank Sound">
 
-            <!-- Toolbar -->
+
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin">
 
-                <!-- Cross button -->
                 <ImageButton
                     android:id="@+id/close_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_cross_white"
-                    android:contentDescription="Close"
+                    android:layout_gravity="start"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:padding="8dp"
-                    android:layout_gravity="start"/>
+                    android:paddingEnd="@dimen/_5sdp"
+                    android:paddingBottom="@dimen/_5sdp"
+                    android:src="@drawable/ic_cross_white" />
+
+
             </androidx.appcompat.widget.Toolbar>
+
+            <TextView
+                android:id="@+id/subtitle_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:text="@string/play_funny_sounds_to_surprise_friends"
+                android:fontFamily="@font/outfit_regular"
+                android:textSize="@dimen/_12ssp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:textColor="@color/unselected_color"
+            />
+
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- RecyclerView (MUST be match_parent for scrolling to work) -->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_prank_sound"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginHorizontal="@dimen/_10sdp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:spanCount="3"
-        tools:listitem="@layout/item_voices"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        tools:listitem="@layout/item_voices" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

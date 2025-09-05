@@ -80,5 +80,15 @@
     <string name="speak_to_text_easily">Speak to Text Easily</string>
     <string name="start">Start</string>
     <string name="your_voice_your_style">Your voice, your style</string>
+    <string name="play_funny_sounds_to_surprise_friends">Play funny sounds to surprise friends</string>
+    <string name="sounds">Sounds</string>
+    <string name="Play">Play</string>
+    <string name="volume">Volume</string>
+    <string name="duration">Duration</string>
+    <string name="_5_seconds">5 Seconds</string>
+    <string name="_5s">5S</string>
+    <string name="_15s">15S</string>
+    <string name="_30s">30S</string>
+    <string name="_1m">1M</string>
 
 </resources>

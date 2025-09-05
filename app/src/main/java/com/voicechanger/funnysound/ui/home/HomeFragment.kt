@@ -10,11 +10,14 @@ import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.findNavController
 import com.voicechanger.funnysound.databinding.FragmentHomeBinding
 import com.voicechanger.funnysound.ui.MainFragmentDirections
+import com.voicechanger.funnysound.utils.PrankSoundClickListener
 import dagger.hilt.android.AndroidEntryPoint
+import com.voicechanger.funnysound.R
+import com.voicechanger.funnysound.data.VoiceEffect
 
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), PrankSoundClickListener {
 
     private var binding : FragmentHomeBinding? =null
 
@@ -41,10 +44,10 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         mActivity?.let { activity->
-            val adapter = PrankSoundAdapter(activity)
+            val adapter = PrankSoundAdapter(activity, arrayListOf(),this,)
             binding?.rvPrankSound?.adapter = adapter
 
-            val adapter2 = PrankSoundAdapter(activity)
+            val adapter2 = PrankSoundAdapter(activity, arrayListOf(),this)
             binding?.rvVoiceEffects?.adapter = adapter2
 
             binding?.recordButton?.setOnClickListener {
@@ -61,6 +64,12 @@ class HomeFragment : Fragment() {
             binding?.prankSoundCard?.setOnClickListener {
                 findNavController().navigate(MainFragmentDirections.actionHomeToPrankSound())
             }
+            binding?.tvSeeAll1?.setOnClickListener {
+                findNavController().navigate(R.id.action_global_to_prank_sounds)
+            }
+            binding?.tvSeeAll2?.setOnClickListener {
+                findNavController().navigate(MainFragmentDirections.actionHomeToPrankSound())
+            }
         }
 
     }
@@ -75,6 +84,13 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+    }
+
+    override fun onPrankSoundClick(position: Int, item : VoiceEffect) {
+        val bundle = Bundle()
+        bundle.putInt("position", position)
+        findNavController().navigate(R.id.action_global_to_prank_player, bundle)
+
     }
 
 

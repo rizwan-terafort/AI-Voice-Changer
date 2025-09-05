@@ -40,6 +40,7 @@
             app:destination="@id/prank_sound_fragment"
             />
 
+
     </fragment>
 
     <fragment
@@ -160,6 +161,22 @@
         tools:layout="@layout/fragment_prank_sound"/>
 
     <fragment
+        android:id="@+id/prank_player_fragment"
+        android:name="com.voicechanger.funnysound.ui.prank_sounds.PrankPlayerFragment"
+        tools:layout="@layout/fragment_prank_player">
+
+        <argument
+            android:name="position"
+            app:argType="integer"/>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/prank_sounds_fragment"
+        android:name="com.voicechanger.funnysound.ui.prank_sounds.PrankSoundsFragment"
+        tools:layout="@layout/fragment_prank_sound"/>
+
+    <fragment
         android:id="@+id/language_fragment"
         android:name="com.voicechanger.funnysound.ui.language.LanguageFragment"
         tools:layout="@layout/fragment_language"/>
@@ -175,5 +192,14 @@
         app:destination="@id/homeFragment"
         />
 
+    <action
+        android:id="@+id/action_global_to_prank_player"
+        app:destination="@id/prank_player_fragment"
+        />
+
+    <action
+        android:id="@+id/action_global_to_prank_sounds"
+        app:destination="@id/prank_sound_fragment"
+        />
 
 </navigation>

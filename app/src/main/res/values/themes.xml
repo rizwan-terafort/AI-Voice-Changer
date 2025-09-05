@@ -45,4 +45,11 @@
         <item name="android:letterSpacing">0</item>
     </style>
 
+    <!-- Custom TextAppearance for Toolbar title -->
+    <style name="collapsingtoolbar" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">@dimen/_18ssp</item> <!-- Set the desired text size -->
+        <item name="android:fontFamily">@font/outfit_bold</item> <!-- Set the desired font family -->
+        <item name="android:textColor">@color/white</item> <!-- Set text color -->
+    </style>
+
 </resources>

@@ -90,5 +90,7 @@
     <string name="_15s">15S</string>
     <string name="_30s">30S</string>
     <string name="_1m">1M</string>
+    <string name="pause">Pause</string>
+    <string name="loop">Loop</string>
 
 </resources>

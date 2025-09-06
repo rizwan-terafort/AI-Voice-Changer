@@ -43,6 +43,15 @@
         android:background="@drawable/bg_rounded_constraintlayout"
         >
 
+        <com.voicechanger.funnysound.utils.RecorderVisualizerView
+            android:id="@+id/barVisualizer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toTopOf="@id/cardview"
+            app:layout_constraintBottom_toBottomOf="@id/cardview"
+            android:layout_gravity="center" />
+
+
         <androidx.cardview.widget.CardView
             android:id="@+id/cardview"
             android:layout_width="@dimen/_80sdp"
@@ -66,20 +75,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_18sdp"
-            android:text="@string/Play"
+            android:text="@string/pause"
             android:fontFamily="@font/outfit_semibold"
             android:textSize="@dimen/_12ssp"
             android:textColor="@color/white"
             android:paddingHorizontal="@dimen/_10sdp"
             android:paddingVertical="@dimen/_7sdp"
             android:background="@drawable/bg_rounded_constraintlayout_gradient"
-            app:drawableStartCompat="@drawable/ic_play_20"
+            app:drawableStartCompat="@drawable/ic_pause_20"
             android:drawablePadding="@dimen/_5sdp"
             app:layout_constraintTop_toBottomOf="@id/cardview"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_prank_sound"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_18sdp"
@@ -160,7 +170,8 @@
             android:minHeight="6dp"
             android:maxHeight="6dp"
             android:max="100"
-            android:progress="40"/>
+            android:min="0"
+            android:progress="50"/>
 
 
         <ImageView
@@ -194,96 +205,111 @@
             android:textSize="@dimen/_11ssp"
             android:fontFamily="@font/outfit_regular"
             android:textColor="@color/white"
-            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/iv_clock"
             app:layout_constraintTop_toTopOf="@id/iv_clock"/>
 
-        <RelativeLayout
+
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_10sdp"
-            app:layout_constraintTop_toBottomOf="@id/iv_clock"
-           >
+            app:layout_constraintTop_toBottomOf="@id/iv_clock">
 
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <com.voicechanger.funnysound.utils.BaseTextview
+                android:id="@+id/txt5s"
+                android:layout_width="@dimen/_45sdp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="4">
+                android:background="@drawable/bg_rounded_constraintlayout"
+                android:backgroundTint="@color/blue1"
+                android:gravity="center"
+                android:paddingVertical="@dimen/_6sdp"
+                android:text="@string/_5s"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_10ssp"
+                android:fontFamily="@font/outfit_regular"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/txt15s"
+                app:layout_constraintHorizontal_chainStyle="spread" />
 
-                <com.voicechanger.funnysound.utils.BaseTextview
+            <com.voicechanger.funnysound.utils.BaseTextview
+                android:id="@+id/txt15s"
+                android:layout_width="@dimen/_45sdp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_rounded_constraintlayout"
+                android:backgroundTint="@color/gray02"
+                android:gravity="center"
+                android:paddingVertical="@dimen/_6sdp"
+                android:text="@string/_15s"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_10ssp"
+                android:fontFamily="@font/outfit_regular"
+                app:layout_constraintTop_toTopOf="@id/txt5s"
+                app:layout_constraintBottom_toBottomOf="@id/txt5s"
+                app:layout_constraintStart_toEndOf="@id/txt5s"
+                app:layout_constraintEnd_toStartOf="@+id/txt30s" />
 
-                    android:id="@+id/txt5s"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/gray02"
-                    android:background="@drawable/bg_rounded_constraintlayout"
-                    android:gravity="center"
-                    android:paddingVertical="@dimen/_6sdp"
-                    android:text="@string/_5s"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_10ssp"
-                    android:fontFamily="@font/outfit_regular"
-                    />
+            <com.voicechanger.funnysound.utils.BaseTextview
+                android:id="@+id/txt30s"
+                android:layout_width="@dimen/_45sdp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_rounded_constraintlayout"
+                android:backgroundTint="@color/gray02"
+                android:gravity="center"
+                android:paddingVertical="@dimen/_6sdp"
+                android:text="@string/_30s"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_10ssp"
+                android:fontFamily="@font/outfit_regular"
+                app:layout_constraintTop_toTopOf="@id/txt5s"
+                app:layout_constraintBottom_toBottomOf="@id/txt5s"
+                app:layout_constraintStart_toEndOf="@id/txt15s"
+                app:layout_constraintEnd_toStartOf="@+id/txt1m" />
 
-                <com.voicechanger.funnysound.utils.BaseTextview
+            <com.voicechanger.funnysound.utils.BaseTextview
+                android:id="@+id/txt1m"
+                android:layout_width="@dimen/_45sdp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_rounded_constraintlayout"
+                android:backgroundTint="@color/gray02"
+                android:gravity="center"
+                android:paddingVertical="@dimen/_6sdp"
+                android:text="@string/_1m"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_10ssp"
+                android:fontFamily="@font/outfit_regular"
+                app:layout_constraintTop_toTopOf="@id/txt5s"
+                app:layout_constraintBottom_toBottomOf="@id/txt5s"
+                app:layout_constraintStart_toEndOf="@id/txt30s"
+                app:layout_constraintEnd_toStartOf="@+id/txtloop" />
 
-                    android:id="@+id/txt15s"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/gray02"
-                    android:background="@drawable/bg_rounded_constraintlayout"
-                    android:gravity="center"
-                    android:paddingVertical="@dimen/_6sdp"
-                    android:text="@string/_15s"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_10ssp"
-                    android:fontFamily="@font/outfit_regular" />
+            <com.voicechanger.funnysound.utils.BaseTextview
+                android:id="@+id/txtloop"
+                android:layout_width="@dimen/_45sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_rounded_constraintlayout"
+                android:backgroundTint="@color/gray02"
+                android:gravity="center"
+                android:paddingVertical="@dimen/_6sdp"
+                android:text="@string/loop"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_10ssp"
+                android:fontFamily="@font/outfit_regular"
+                app:layout_constraintTop_toTopOf="@id/txt5s"
+                app:layout_constraintBottom_toBottomOf="@id/txt5s"
+                app:layout_constraintStart_toEndOf="@id/txt1m"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-                <com.voicechanger.funnysound.utils.BaseTextview
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    android:id="@+id/txt30s"
 
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="6dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/gray02"
-                    android:background="@drawable/bg_rounded_constraintlayout"
-                    android:gravity="center"
-                    android:paddingVertical="@dimen/_6sdp"
-                    android:text="@string/_30s"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_10ssp"
-                    android:fontFamily="@font/outfit_regular" />
 
-                <com.voicechanger.funnysound.utils.BaseTextview
-
-                    android:id="@+id/txt1m"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="6dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_rounded_constraintlayout"
-                    android:backgroundTint="@color/gray02"
-                    android:gravity="center"
-                    android:paddingVertical="@dimen/_6sdp"
-                    android:text="@string/_1m"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_10ssp"
-                    android:fontFamily="@font/outfit_regular" />
-
-            </LinearLayout>
-
-        </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

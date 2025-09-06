@@ -169,6 +169,10 @@
             android:name="position"
             app:argType="integer"/>
 
+        <argument
+            android:name="isFromHome"
+            app:argType="boolean"/>
+
     </fragment>
 
     <fragment

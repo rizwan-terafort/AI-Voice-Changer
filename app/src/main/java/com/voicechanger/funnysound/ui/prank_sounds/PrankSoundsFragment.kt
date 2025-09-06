@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.voicechanger.funnysound.R
+import com.voicechanger.funnysound.common.getAllVoiceEffects
 import com.voicechanger.funnysound.data.VoiceEffect
 import com.voicechanger.funnysound.databinding.FragmentPrankSoundBinding
 import com.voicechanger.funnysound.ui.recorder.voice_effect.VoicesAdapter
@@ -19,7 +20,7 @@ import com.voicechanger.funnysound.utils.AppUtils
 import com.voicechanger.funnysound.utils.PrankSoundClickListener
 
 class PrankSoundsFragment : Fragment(), PrankSoundClickListener {
-    private val voiceEffects = arrayListOf<VoiceEffect>()
+
     private var binding : FragmentPrankSoundBinding? = null
 
     override fun onCreateView(
@@ -43,10 +44,10 @@ class PrankSoundsFragment : Fragment(), PrankSoundClickListener {
             }
             handleBackPress(activity)
 
-            setupVoiceEffects()
+
 
             val adapter = PrankSoundsAdapternew(
-                activity, voiceEffects, this
+                activity, getAllVoiceEffects(), this
             )
 
             val glm = GridLayoutManager(requireContext(), 3)
@@ -82,32 +83,6 @@ class PrankSoundsFragment : Fragment(), PrankSoundClickListener {
         }
     }
 
-    private fun setupVoiceEffects() {
-        voiceEffects.addAll(
-            listOf(
-                VoiceEffect(1, "Bird", R.drawable.default_),
-                VoiceEffect(2, "Car Passing", R.drawable.default_),
-                VoiceEffect(3, "Cat", R.drawable.default_),
-                VoiceEffect(4, "Child", R.drawable.default_),
-                VoiceEffect(5, "Dog", R.drawable.default_),
-                VoiceEffect(6, "Door", R.drawable.default_),
-                VoiceEffect(7, "Fart", R.drawable.default_),
-                VoiceEffect(8, "FX", R.drawable.default_),
-                VoiceEffect(9, "Gunshot", R.drawable.default_),
-                VoiceEffect(10, "Incoming Call", R.drawable.default_),
-                VoiceEffect(11, "Mosquito", R.drawable.default_),
-                VoiceEffect(12, "Ocean", R.drawable.default_),
-                VoiceEffect(13, "Police Siren", R.drawable.default_),
-                VoiceEffect(14, "Rain", R.drawable.default_),
-                VoiceEffect(15, "Siren", R.drawable.default_),
-                VoiceEffect(16, "Summer Night Loop", R.drawable.default_),
-                VoiceEffect(17, "Thunder", R.drawable.default_),
-                VoiceEffect(18, "Tiger", R.drawable.default_),
-                VoiceEffect(19, "Alarm", R.drawable.default_),
-                VoiceEffect(20, "", R.drawable.default_),
-            )
-        )
-    }
 
 
     private var mActivity: FragmentActivity? = null
@@ -146,6 +121,7 @@ class PrankSoundsFragment : Fragment(), PrankSoundClickListener {
     ) {
         val bundle = Bundle()
         bundle.putInt("position", position)
+        bundle.putBoolean("isFromHome", false)
         findNavController().navigate(R.id.action_global_to_prank_player, bundle)
     }
 

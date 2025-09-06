@@ -22,6 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:text="Police"
         android:textColor="#5E626C"
+        android:layout_marginTop="@dimen/_5sdp"
         android:fontFamily="@font/outfit_regular"
         android:textSize="@dimen/_10ssp"/>
 

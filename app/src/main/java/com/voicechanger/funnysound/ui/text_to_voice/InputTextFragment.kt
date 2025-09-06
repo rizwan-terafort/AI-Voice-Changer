@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.findNavController
 import com.voicechanger.funnysound.R
+import com.voicechanger.funnysound.common.getAllVoiceEffects
 import com.voicechanger.funnysound.databinding.FragmentInputTextBinding
 import com.voicechanger.funnysound.ui.home.PrankSoundAdapter
 import com.voicechanger.funnysound.utils.AppUtils
@@ -50,7 +51,7 @@ class InputTextFragment : Fragment() {
             AppUtils.getMain(activity).hideBottomNavigationView()
 
 
-            val adapter = PrankSoundAdapter(activity)
+            val adapter = PrankSoundAdapter(activity, getAllVoiceEffects())
             binding?.rvVoiceEffects?.adapter = adapter
 
             initializeTextToSpeech()

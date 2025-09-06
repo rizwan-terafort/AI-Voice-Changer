@@ -13,6 +13,7 @@ import com.voicechanger.funnysound.ui.MainFragmentDirections
 import com.voicechanger.funnysound.utils.PrankSoundClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import com.voicechanger.funnysound.R
+import com.voicechanger.funnysound.common.getAllVoiceEffects
 import com.voicechanger.funnysound.data.VoiceEffect
 
 
@@ -44,10 +45,10 @@ class HomeFragment : Fragment(), PrankSoundClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         mActivity?.let { activity->
-            val adapter = PrankSoundAdapter(activity, arrayListOf(),this,)
+            val adapter = PrankSoundAdapter(activity, getAllVoiceEffects(),this,)
             binding?.rvPrankSound?.adapter = adapter
 
-            val adapter2 = PrankSoundAdapter(activity, arrayListOf(),this)
+            val adapter2 = PrankSoundAdapter(activity, getAllVoiceEffects(),this)
             binding?.rvVoiceEffects?.adapter = adapter2
 
             binding?.recordButton?.setOnClickListener {
@@ -89,6 +90,7 @@ class HomeFragment : Fragment(), PrankSoundClickListener {
     override fun onPrankSoundClick(position: Int, item : VoiceEffect) {
         val bundle = Bundle()
         bundle.putInt("position", position)
+        bundle.putBoolean("isFromHome", true)
         findNavController().navigate(R.id.action_global_to_prank_player, bundle)
 
     }
